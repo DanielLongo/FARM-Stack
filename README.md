@@ -15,4 +15,4 @@ For testing
 - 
 
 For deployment
-- 
+https://www.freecodecamp.org/news/how-to-setup-a-ci-cd-pipeline-with-github-actions-and-aws/
