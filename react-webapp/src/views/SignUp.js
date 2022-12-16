@@ -8,8 +8,8 @@ function SignUpForm({onClose, showLogin}) {
     <div
     className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 w-8/12 md:w-6/12">
         <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-        <button className="p-2 rounded-lg bg-white hover:bg-slate-100">
-        <XIcon  onClick={onClose} className="w-5 text-gray h-5 font-bold " aria-hidden="true"/>
+        <button onClick={onClose} className="p-2 rounded-lg bg-white hover:bg-slate-100">
+        <XIcon className="w-5 text-gray h-5 font-bold " aria-hidden="true"/>
         </button>
         </div>
         <div className='flex flex-row items-center justify-around mb-12'>
