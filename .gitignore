@@ -1,0 +1,5 @@
+# Ignore virtual environment directories and files
+**/venv/
+
+# Ignore macOS Finder metadata files
+.DS_Store
