@@ -17,7 +17,7 @@ function Footer() {
             </li>
             <li>
               <a className="text-sm tracking-wider px-2" href="#">
-                Blog
+                Careers
               </a>
             </li>
             <li>
