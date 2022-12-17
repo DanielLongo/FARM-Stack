@@ -3,3 +3,6 @@
 
 # Ignore macOS Finder metadata files
 .DS_Store
+
+
+**/__pycache__/
