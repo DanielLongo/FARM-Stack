@@ -8,8 +8,6 @@ function Home() {
             <AppBar/>
             <div>
                 <h1 className="mt-20 text-3xl font-bold underline">Home</h1>
-                <SignUpForm/>
-                <SignUpForm/>
             </div>
         </div>
     );
