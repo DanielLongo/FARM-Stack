@@ -66,7 +66,7 @@ function LoginForm({onClose, showSignUp, showPasswordReset, showConfirm, setUser
                         />
                         <p className="text-xs mt-4">Forgot Your Password? <a onClick={showPasswordReset} className='text-blue-800 cursor-pointer'>Reset Password</a></p>
                         <p className="text-xs mb-2">Don't have an account? <a onClick={showSignUp} className='text-blue-800 cursor-pointer'>Sign Up</a></p>
-                        <button onClick={hanldeLogin} className="p-2 mb-4 w-full bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700 mt-4">
+                        <button onClick={hanldeLogin} className="p-2 mb-4 w-full font-semibold bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700 mt-4">
                             Login
                         </button>
                 </div>
