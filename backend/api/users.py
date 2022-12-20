@@ -1,6 +1,6 @@
 from typing import Union
 from fastapi import APIRouter
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -119,9 +119,13 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get("/me/", response_model=User)
-async def read_users_me(current_user: User = Depends(get_current_active_user)):
-    return current_user
+@router.get("/me/")
+async def read_users_me(request: Request):
+    print(request.headers)
+
+    return "success"
+# async def read_users_me(current_user: User = Depends(get_current_active_user)):
+#     return current_user
 
 
 @router.get("/me/items/")

@@ -1,9 +1,19 @@
 import React, {useState} from 'react';
 import {XIcon, Heros} from "@heroicons/react/solid";
 import Modal from '../components/Modal';
-function SignUpForm({onClose, showLogin}) {
+import { singUp } from '../utils/auth';
+
+function SignUpForm({onClose, showLogin, showConfirm}) {
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");  
+    const [password, setPassword] = useState("");
+    
+    const hanldeSignUp = async () => {
+        // no addtional attributes so empty {}
+        const user = await singUp(email, password, {})
+        console.log('user', user)
+        showConfirm()
+      }
+
   return (
     <Modal onClose={onClose}>
         <div
@@ -34,7 +44,7 @@ function SignUpForm({onClose, showLogin}) {
                         />
                         <p className="text-xs mt-4 mb-1">By signing up you agree to the <a href="/terms" className='text-blue-800'>terms of service</a> and <a href="/terms" className='text-blue-800'>privacy policy</a></p>
                         <p className="text-xs mb-2">Already have an account? <a onClick={showLogin} className='text-blue-800 cursor-pointer'>Login</a></p>
-                        <button className="p-2 mb-4 w-full bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700 mt-4">
+                        <button onClick={hanldeSignUp} className="p-2 mb-4 w-full bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700 mt-4">
                             Sign Up
                         </button>
                 </div>

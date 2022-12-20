@@ -1,16 +1,32 @@
 import React, {useState} from "react";
 import {XIcon, Heros} from "@heroicons/react/solid";
 import Modal from '../components/Modal';
-import {login} from '../utils/auth';
+import {login, resendConfirmationCode} from '../utils/auth';
+import { Auth } from 'aws-amplify';
+import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
-function LoginForm({onClose, showSignUp, showPasswordReset}) {
+
+
+function LoginForm({onClose, showSignUp, showPasswordReset, showConfirm, setUsername}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigation = useNavigate();
+
   const hanldeLogin = async () => {
-    const user = await login(email, password)
-    console.log('user', user)
-  }
+    setUsername(email)
+    const response = await login(email, password)
+    if (response === 'success') {
+        toast.success("success")
+        onClose();
+        navigation('/home')
+    } else if (response === 'UserNotConfirmedException') {
+        resendConfirmationCode(email)
+        setUsername(email)
+        showConfirm()
+    }
+}
 
   return (
     <Modal onClose={onClose}>
