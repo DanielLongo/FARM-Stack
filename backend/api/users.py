@@ -1,4 +1,5 @@
 from typing import Union
+from dependencies import authenticate_user
 from fastapi import APIRouter
 from fastapi import Depends, FastAPI, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -53,13 +54,13 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
+# def authenticate_user(fake_db, username: str, password: str):
+#     user = get_user(fake_db, username)
+#     if not user:
+#         return False
+#     if not verify_password(password, user.hashed_password):
+#         return False
+#     return user
 
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     to_encode = data.copy()
@@ -120,10 +121,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 
 @router.get("/me/")
-async def read_users_me(request: Request):
-    print(request.headers)
+async def read_users_me(user_claims: dict = Depends(authenticate_user)):
+    print(user_claims)
 
-    return "success"
+    return user_claims
 # async def read_users_me(current_user: User = Depends(get_current_active_user)):
 #     return current_user
 
