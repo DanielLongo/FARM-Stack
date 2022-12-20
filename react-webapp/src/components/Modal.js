@@ -6,7 +6,7 @@ function Modal(props) {
             <div className="fixed inset-0 bg-slate-100/[.5] backdrop-blur-lg bg-opacity-75 transition-opacity"></div>
             <div className="fixed z-10 inset-0 overflow-y-auto">
                 <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
-                  {props.content}
+                  {props.children}
             </div>
             </div>
         </div>
