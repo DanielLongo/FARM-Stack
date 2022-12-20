@@ -1,12 +1,13 @@
 ### TODOs
-[ ] conenct backend with db
-[ ] auto create new entry in db for new user
-[ ] landing page 
-[ ] account page
-[ ] dockerize
-[ ] deployment with github actions
-[ ] password reset
-[ ] react-native frontend*
+- [ ] conenct backend with db
+- [ ] auto create new entry in db for new user
+- [ ] user roles
+- [ ] landing page 
+- [ ] account page
+- [ ] dockerize
+- [ ] deployment with github actions
+- [ ] password reset
+- [ ] react-native frontend*
 
 ### Farm Stack Template
 
