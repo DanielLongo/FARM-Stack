@@ -105,15 +105,24 @@ export const singUp = async (email, password, attributes) => {
 }
 
 export const googleAuth = async () => {
+    let user;
     try {
-        const user = await Auth.federatedSignIn({
+        user = await Auth.federatedSignIn({
             provider: CognitoHostedUIIdentityProvider.Google
           });
-          console.log("user", user)
     } catch (error) {
-        console.log("Error", error)
-        if (error.message === "PreSignUp failed with error A user with this email already exists. Perhaps Social Sign was used in addition to a standard account..") {
-            toast.error("Social Sign in or a standard account already exists with this email. Please login into existing account or use a new email address.")
-        }
     }
+    console.log("USER", user)
+    // try {
+    //     console.log("googleAuth")
+    //     const user = await Auth.federatedSignIn({
+    //         provider: CognitoHostedUIIdentityProvider.Google
+    //       });
+    //       console.log("user", user)
+    // } catch (error) {
+    //     console.log("Error", error)
+    //     if (error.message === "PreSignUp failed with error A user with this email already exists. Perhaps Social Sign was used in addition to a standard account..") {
+    //         toast.error("Social Sign in or a standard account already exists with this email. Please login into existing account or use a new email address.")
+    //     }
+    // }
 }
