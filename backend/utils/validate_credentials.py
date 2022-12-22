@@ -1,6 +1,7 @@
 import requests
 import hashlib
 
+
 def has_uppercase(string):
     return any(char.isupper() for char in string)
 
@@ -36,6 +37,7 @@ def validate_password(password):
         return "password compromised"
 
     return "valid"
+
     
 
     
