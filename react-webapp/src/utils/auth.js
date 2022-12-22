@@ -7,13 +7,15 @@ import { toast } from 'react-toastify';
 import { useHistory } from "react-router-dom";
 import { CognitoHostedUIIdentityProvider } from "@aws-amplify/auth/lib/types";
 
-
-export const isAuthenticated = async () => {
-    const request = new Request(`${API_ENDPOINT}/users/me`, {
-        method: 'GET',
-    })
-    const response = await fetch(request);
-    return response.status === 200;
+export const isLoggedIn = async () => {
+    try {
+        const user = await Auth.currentAuthenticatedUser()
+        console.log("user -", user)
+        return true
+    } catch (error) {
+        console.log("error", error)
+        return false;
+    }
 }
 
 export const authToken = async () => {

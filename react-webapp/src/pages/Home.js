@@ -1,22 +1,28 @@
-import React from "react";
+import React, {useEffect} from "react";
 import AppBar from "../components/AppBar";
 import SignUpForm from "../views/SignUp";
 import { API_ENDPOINT } from '../constants';
-import { authToken } from "../utils/auth";
+import { authToken, isLoggedIn } from "../utils/auth";
+import {testSecureEndpoint} from "../utils/api";
+import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 function Home() {
-
-    const testSecureEndpoint = async () => {
-        const token = await authToken();
-        const request = new Request(`${API_ENDPOINT}/users/me`, {
-            method: "GET",
-            headers: {
-                Authorization: token
+    const navigate = useNavigate();
+    useEffect(() => {
+        const testIfLoggedIn = async () => {
+            console.log("testIfLoggedIn")
+            const isAuthed = await isLoggedIn();
+            console.log("isAuthed", isAuthed)
+            if (!isAuthed) {
+                toast.info("Please login")
+                navigate("/");
             }
-        });
-        const response = await fetch(request);
-        console.log("response", response);
-    }
+        }
+        testIfLoggedIn();
+    }, [])
+
+
 
     return (
         <div>
