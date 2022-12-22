@@ -66,6 +66,7 @@ export const login = async (email, password) => {
 export const signOut = async () => {
     try {
         await Auth.signOut();
+        window.location.reload();
         return "successs"
 
     } catch (error) {
@@ -115,7 +116,7 @@ export const googleAuth = async () => {
     } catch (error) {
         console.log("Error", error)
     }
-    
+
     console.log("USER", user)
     // try {
     //     console.log("googleAuth")

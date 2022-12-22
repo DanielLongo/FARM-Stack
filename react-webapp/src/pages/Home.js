@@ -15,7 +15,6 @@ function Home() {
             const isAuthed = await isLoggedIn();
             console.log("isAuthed", isAuthed)
             if (!isAuthed) {
-                toast.info("Please login")
                 navigate("/");
             }
         }

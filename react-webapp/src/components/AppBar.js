@@ -31,7 +31,7 @@ function AppBar(props) {
           {user ? 
           <div>
             <button onClick={handleSignOut} className="px-4 py-2 mr-2 border-[0px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700"> Sign Out </button> 
-            {!dashboardPages.includes(window.location.pathname) && <button onClick={() => navigate("/home")} className="px-4 py-2 bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700"> To Dashboard </button>}
+            {!dashboardPages.includes(window.location.pathname) && <button onClick={() => navigate("/home")} className="whitespace-nowrap px-4 py-2 text-white font-semibold bg-blue-800 rounded-lg hover:bg-blue-300 hover:text-gray-800"> To Dashboard </button>}
           </div>
           :
         <div>
