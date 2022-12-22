@@ -9,6 +9,7 @@
 - [ ] dockerize
 - [ ] deployment with github actions
 - [x] password reset
+- [ ] fix toasts
 - [ ] react-native frontend*
 
 ### Farm Stack Template
