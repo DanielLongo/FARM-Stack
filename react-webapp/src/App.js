@@ -14,8 +14,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Amplify, API, graphqlOperation } from 'aws-amplify'
 // import { withAuthenticator, Button, Heading } from '@aws-amplify/ui-react';
 // import '@aws-amplify/ui-react/styles.css';
-import awsExports from "./aws-exports";
-Amplify.configure(awsExports);
+// import awsExports from "./aws-exports";
+// Amplify.configure(awsExports);
 
 // Amplify.configure(awsconfig);
 // Auth.configure(awsconfig);
