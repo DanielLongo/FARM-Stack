@@ -10,6 +10,7 @@
 - [ ] deployment with github actions
 - [x] password reset
 - [ ] fix toasts
+- [ ] css classes for common componentes (input, secondary button...)
 - [ ] react-native frontend*
 
 ### Farm Stack Template
