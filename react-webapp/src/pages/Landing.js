@@ -6,6 +6,7 @@ import SignUpForm from '../views/SignUp';
 import PasswordResetForm from '../views/RequestPasswordReset';
 import ConfirmSignUpForm from '../views/ConfirmSignUp';
 import {Auth} from 'aws-amplify';
+import SetPasswordForm from '../views/SetPassword';
 
 function Landing(props) {
     // keep track of which auth modal to display (0 = none, 1 = login, 2 = sign up, 3 = password reset)
@@ -26,8 +27,9 @@ function Landing(props) {
   return (
     <div>
         { 
+            authModalDisplay === 5 ? <SetPasswordForm onClose={closeModal} username={username}/> :
             authModalDisplay === 4 ? <ConfirmSignUpForm onClose={closeModal} username={username}/> :
-            authModalDisplay === 3 ? <PasswordResetForm onClose={closeModal}/> :
+            authModalDisplay === 3 ? <PasswordResetForm initialUsername={username} onClose={closeModal} setUsername={setUsername} showSetPassword={() => setAuthModalDisplay(5)}/> :
             authModalDisplay === 2 ? <SignUpForm onClose={closeModal} showLogin={() => setAuthModalDisplay(1)} showConfirm={() => setAuthModalDisplay(4)} setUsername={setUsername}/> :
             authModalDisplay === 1 && <LoginForm onClose={closeModal} showSignUp={() => setAuthModalDisplay(2)} showPasswordReset={() => setAuthModalDisplay(3)} setUsername={setUsername} showConfirm={() => setAuthModalDisplay(4)}/>
         }
@@ -52,7 +54,7 @@ function Landing(props) {
                         placeholder="Enter your email"
                         />
                     </div>
-                    <button onClick={handleRequestDemo} className="whitespace-nowrap mb-4 px-4 py-2 text-white font-semibold bg-blue-800 rounded-lg hover:bg-blue-300 hover:text-gray-800">
+                    <button onClick={handleRequestDemo} className="btn-primary mb-4">
                         Call to Action
                     </button>                    
                     </div>

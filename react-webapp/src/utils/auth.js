@@ -27,6 +27,7 @@ export const authToken = async () => {
     }
 }
 
+
 export const resendConfirmationCode = async(username) => {
     try {
         await Auth.resendSignUp(username);
@@ -82,6 +83,20 @@ export const signOut = async () => {
 //         console.log('error signing out: ', error);
 //     }
 // }
+
+export const forgotPassword = async (email) => {
+    await Auth.forgotPassword(email)
+}
+
+export const changePassword = async (email, code, password) => {
+    try {
+        await Auth.forgotPasswordSubmit(email, code, password)
+        return "success"
+    } catch (error) {
+        toast.error("Error", error.message)
+    }
+    return "failed"
+}
 
 
 export const signUp = async (email, password, attributes) => {

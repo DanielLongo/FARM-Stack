@@ -58,7 +58,7 @@ function SignUpForm({onClose, showLogin, showConfirm}) {
                         />
                         <p className="text-xs mt-4 mb-1">By signing up you agree to our <a href="/terms" className='text-blue-800 hover:underline'>
                             Terms of Service</a> and <a href="/terms" className='text-blue-800 hover:underline'>Privacy Policy</a></p>
-                        <button onClick={handleSignUp} className="p-2 mb-4 w-full text-white font-semibold bg-blue-800 rounded-lg hover:bg-blue-300 hover:text-gray-800 mt-4">
+                        <button onClick={handleSignUp} className="my-4 w-full btn-primary">
                             Sign Up
                         </button>
                         <div className='flex flex-row justify-center'>

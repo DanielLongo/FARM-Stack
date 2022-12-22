@@ -1,14 +1,22 @@
 import React, {useState} from "react";
 import {XIcon, Heros} from "@heroicons/react/solid";
 import Modal from '../components/Modal';
+import { forgotPassword } from '../utils/auth';
 
-function RequestPasswordReset({onClose, showSignUp}) {
-    const [email, setEmail] = useState("");
+function RequestPasswordReset({onClose, setUsername, showSetPassword, initialUsername}) {
+    const [email, setEmail] = useState(initialUsername);
+
+    const handleResetPassword = async () => {
+        setUsername(email)
+        const response = await forgotPassword(email)
+        showSetPassword()
+    }
+
     
   return (
         <Modal onClose={onClose}>
             <div
-            className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 w-8/12 md:w-6/12">
+            className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all w-11/12 max-w-md">
                 <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button onClick={onClose} className="p-2 rounded-lg bg-white hover:bg-slate-100">
                 <XIcon className="w-5 text-gray h-5 font-bold " aria-hidden="true"/>
@@ -25,8 +33,7 @@ function RequestPasswordReset({onClose, showSignUp}) {
                                 type="email"
                                 placeholder="Enter your email"
                             />
-                            <p className="text-xs mt-2 mb-2">Back to Login <a onClick={showSignUp} className='text-blue-800 cursor-pointer'>Reset password</a></p>
-                            <button className="px-4 py-2 bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700 mt-4">
+                            <button className="btn-primary mt-4" onClick={handleResetPassword}>
                                 Reset Password
                             </button>
                     </div>

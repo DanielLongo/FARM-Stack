@@ -59,13 +59,13 @@ function LoginForm({onClose, showSignUp, showPasswordReset, showConfirm, setUser
                         <input
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="mt-1 px-4 py-2 placeholder-slate-500 bg-slate-200 focus:bg-white rounded-lg w-full focus:border-slate-500"
+                            className="mt-1 px-4 py-2 placeholder-slate-500 bg-slate-100 focus:bg-white rounded-lg w-full focus:border-slate-500"
                             id="password"
                             type="password"
                             placeholder="Enter your password"
                         />
                             <p className="text-xs mt-4 mb-1"><a onClick={showPasswordReset} className='hover:underline text-blue-800 cursor-pointer'>Reset Password</a></p>
-                        <button onClick={handleLogin} className="p-2 mb-4 w-full text-white font-semibold bg-blue-800 rounded-lg hover:bg-blue-300 hover:text-gray-800 mt-4">
+                        <button onClick={handleLogin} className="mb-4 mt-2 btn-primary w-full">
                             Login
                         </button>
                         <div className= 'flex flex-row justify-center'>
