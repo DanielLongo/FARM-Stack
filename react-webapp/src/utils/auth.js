@@ -107,11 +107,15 @@ export const signUp = async (email, password, attributes) => {
 export const googleAuth = async () => {
     let user;
     try {
+        console.log("A")
         user = await Auth.federatedSignIn({
             provider: CognitoHostedUIIdentityProvider.Google
           });
+          console.log("B")
     } catch (error) {
+        console.log("Error", error)
     }
+    
     console.log("USER", user)
     // try {
     //     console.log("googleAuth")

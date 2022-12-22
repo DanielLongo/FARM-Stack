@@ -11,7 +11,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Amplify } from 'aws-amplify'
 import aws_exports from './aws-exports';
-Amplify.configure(aws_exports);
+
+try {
+  Amplify.configure(aws_exports);
+} catch (e) {
+  console.log("error", e);
+}
 
 function App() {
   

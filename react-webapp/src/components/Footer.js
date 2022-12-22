@@ -3,7 +3,9 @@ import React from 'react';
 function Footer() {
     const today = new Date();
   return (
-    <footer className="bg-slate-50 text-black py-4 w-full">
+
+    <footer className="text-black w-full bg-slate-50 mt-12">
+      <div className="md:mx-16 lg:mx-32 py-4">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           <p className="text-sm tracking-wider">
@@ -27,6 +29,7 @@ function Footer() {
             </li>
           </ul>
         </div>
+      </div>
       </div>
     </footer>
   );

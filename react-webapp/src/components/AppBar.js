@@ -12,19 +12,9 @@ function AppBar(props) {
     }).catch((err) => {
       console.log("user not logged in", err)
     })
-    // const getUser = async () => {
-    //   Auth.currentAuthenticatedUser().then((user) => {
-    //     setUser(user);
-    //   })
-    //     const userLatest = await Auth.currentAuthenticatedUser();
-    //     console.log("latest user", userLatest)
-    //     setUser(userLatest);
-    // }
-    // getUser();
     }, [])
 
     const navigate = useNavigate();
-
     const handleSignOut = async () => {
       const res = await signOut();
       navigate("/");
@@ -35,7 +25,7 @@ function AppBar(props) {
 
   
     return (
-        <div className="backdrop-blur-xl bg-slate-0/[.65] mx-40 p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-9">
+        <div className="backdrop-blur-xl bg-slate-0/[.65] bg-red p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-9  md:mx-16 lg:mx-32">
         <a href="/"><h1 className="text-xl text-black">[App Name]</h1></a>
         <div>
           {user ? 
@@ -49,9 +39,10 @@ function AppBar(props) {
             Login
           </button>
           <button onClick={props.showSignUp} className="whitespace-nowrap px-4 py-2 text-white font-semibold bg-blue-800 rounded-lg hover:bg-blue-300 hover:text-gray-800">
-            Sign up
+            Sign Up
           </button>
-          </div>}
+          </div>
+}
         </div>
       </div>
     );
