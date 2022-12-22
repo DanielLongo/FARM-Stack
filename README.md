@@ -1,4 +1,5 @@
 ### TODOs
+- [ ] key strokes for ui interactions (esc close modal, enter primary button...)
 - [ ] fix double sign in (social + email)
 - [ ] conenct backend with db
 - [ ] auto create new entry in db for new user
