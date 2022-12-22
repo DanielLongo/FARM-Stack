@@ -1,4 +1,5 @@
 ### TODOs
+- [ ] fix double sign in (social + email)
 - [ ] conenct backend with db
 - [ ] auto create new entry in db for new user
 - [ ] user roles
@@ -6,7 +7,7 @@
 - [ ] account page
 - [ ] dockerize
 - [ ] deployment with github actions
-- [ ] password reset
+- [x] password reset
 - [ ] react-native frontend*
 
 ### Farm Stack Template
