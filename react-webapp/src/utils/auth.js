@@ -73,14 +73,14 @@ export const signOut = async () => {
     }
 }
 
-async function gloablSignOut() {
-    // signs out of all devices
-    try {
-        await Auth.signOut({ global: true });
-    } catch (error) {
-        console.log('error signing out: ', error);
-    }
-}
+// async function gloablSignOut() {
+//     // signs out of all devices
+//     try {
+//         await Auth.signOut({ global: true });
+//     } catch (error) {
+//         console.log('error signing out: ', error);
+//     }
+// }
 
 
 export const singUp = async (email, password, attributes) => {
@@ -96,13 +96,24 @@ export const singUp = async (email, password, attributes) => {
         });
         console.log(user);
     } catch (error) {
+        if (error.message === "PreSignUp failed with error A user with this email already exists. Perhaps Social Sign was used in addition to a standard account..") {
+            toast.error("Social Sign in or a standard account already exists with this email. Please login into existing account or use a new email address.")
+        }
+        // if (error.message === "")
         console.log('error signing up:', error);
     }
 }
 
 export const googleAuth = async () => {
-    const user = await Auth.federatedSignIn({
-        provider: CognitoHostedUIIdentityProvider.Google
-      });
-    console.log("user", user)
+    try {
+        const user = await Auth.federatedSignIn({
+            provider: CognitoHostedUIIdentityProvider.Google
+          });
+          console.log("user", user)
+    } catch (error) {
+        console.log("Error", error)
+        if (error.message === "PreSignUp failed with error A user with this email already exists. Perhaps Social Sign was used in addition to a standard account..") {
+            toast.error("Social Sign in or a standard account already exists with this email. Please login into existing account or use a new email address.")
+        }
+    }
 }
