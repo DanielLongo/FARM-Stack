@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import { Auth } from 'aws-amplify';
 import { toast } from 'react-toastify';
 import { useHistory } from "react-router-dom";
+import { CognitoHostedUIIdentityProvider } from "@aws-amplify/auth/lib/types";
 
 
 export const isAuthenticated = async () => {
@@ -97,49 +98,9 @@ export const singUp = async (email, password, attributes) => {
     }
 }
 
-export const logins = async (email, password) => {
-    if (!(email.length > 0) || !(password.length > 0)) {
-        throw new Error('Email or password was not provided');
-    }
-
-    const formData = new FormData();
-    // OAuth2 expects form data, not JSON data
-    formData.append('username', email);
-    formData.append('password', password);
-
-    const request = new Request(`${API_ENDPOINT}/users/token`, {
-        method: 'POST',
-        body: formData,
-    });
-
-    const response = await fetch(request);
-
-    if (response.status === 500) {
-        throw new Error('Internal server error');
-    }
-
-    const data = await response.json();
-
-    if (response.status > 400 && response.status < 500) {
-        if (data.detail) {
-        throw data.detail;
-        }
-        throw data;
-    }
-
-    if ('access_token' in data) {
-        const decodedToken = decodeJwt(data['access_token']);
-        console.log("decoded token", data['access_token'], decodedToken, decodedToken.permissions);
-
-        const cookies = new Cookies();
-
-        // waring - old browser not compatible with samesite strict vulunrability to csrf
-        cookies.set('token', data['access_token'], { path: '/', secure: true, httpOnly: true, sameSite: 'strict' });
-        cookies.set('logged_in', decodedToken.exp, { path: '/', secure: true, httpOnly: true, sameSite: 'strict' });
-        // localStorage.setItem('token', data['access_token']);
-        // localStorage.setItem('permissions', decodedToken.permissions);
-        return "success"
-    }
-
-    throw new Error('Failed to login');
-};
+export const googleAuth = async () => {
+    const user = await Auth.federatedSignIn({
+        provider: CognitoHostedUIIdentityProvider.Google
+      });
+    console.log("user", user)
+}
