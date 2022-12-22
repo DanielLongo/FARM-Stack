@@ -35,7 +35,7 @@ function AppBar(props) {
 
   
     return (
-        <div className="backdrop-blur-xl bg-slate-0/[.65] p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-9">
+        <div className="backdrop-blur-xl bg-slate-0/[.65] mx-40 p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-9">
         <a href="/"><h1 className="text-xl text-black">[App Name]</h1></a>
         <div>
           {user ? 
@@ -48,11 +48,10 @@ function AppBar(props) {
           <button onClick={props.showLogin} className="px-4 py-2 mr-2 border-[0px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700">
             Login
           </button>
-          <button onClick={props.showSignUp} className="px-4 py-2 bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700">
-            Sign Up
+          <button onClick={props.showSignUp} className="whitespace-nowrap px-4 py-2 text-white font-semibold bg-blue-800 rounded-lg hover:bg-blue-300 hover:text-gray-800">
+            Sign up
           </button>
-          </div>
-}
+          </div>}
         </div>
       </div>
     );
