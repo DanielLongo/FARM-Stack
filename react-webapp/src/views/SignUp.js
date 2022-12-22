@@ -1,17 +1,22 @@
 import React, {useState} from 'react';
 import {XIcon, Heros} from "@heroicons/react/solid";
 import Modal from '../components/Modal';
-import { googleAuth, singUp } from '../utils/auth';
+import { googleAuth, signUp } from '../utils/auth';
+import { useNavigate } from "react-router-dom";
 
 function SignUpForm({onClose, showLogin, showConfirm}) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
     
     const handleSignUp = async () => {
         // no addtional attributes so empty {}
-        const user = await singUp(email, password, {})
+        const user = await signUp(email, password, {})
         console.log('user', user)
-        showConfirm()
+        // uncomment if you want to show the confirm modal after signup
+        // showConfirm()
+        navigate('/home')
+
       }
 
   return (

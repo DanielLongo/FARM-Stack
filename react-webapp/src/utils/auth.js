@@ -83,7 +83,7 @@ export const signOut = async () => {
 // }
 
 
-export const singUp = async (email, password, attributes) => {
+export const signUp = async (email, password, attributes) => {
     console.log("email", email, "password", password, "attributes", attributes)
     try {
         const { user } = await Auth.signUp({
