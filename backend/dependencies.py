@@ -1,27 +1,24 @@
-import cognitojwt
-import os
-from dotenv import load_dotenv
 from fastapi import Request, HTTPException, status
-import boto3
+from fastapi import Cookie
+from utils.auth import Auth
 from utils.database import db
-load_dotenv()
+from bson.objectid import ObjectId
 
-REGION = os.getenv("REGION")
-USERPOOL_ID = os.getenv("USERPOOL_ID")
-APP_CLIENT_ID = os.getenv("APP_CLIENT_ID")
+auth_handler = Auth()
 
-cognito_client = boto3.client('cognito-idp')
-
-async def authenticate_user(request: Request):
-    id_token = request.headers.get("Authorization")
-    print("identity token: ", id_token)
-    claims = check_jwt(id_token)
-    print("CLAIMS",  claims)
-    print(REGION, USERPOOL_ID, APP_CLIENT_ID)
-    if claims is None:
+async def get_user(access_token: str = Cookie(None, alias="access_token_")):
+    if access_token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authorization requred",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return claims
+    user_id = auth_handler.decode_token(access_token)
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authorization requred",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    user = await db["users"].find_one({"_id": ObjectId(user_id)})
+    return user

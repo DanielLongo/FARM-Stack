@@ -1,4 +1,6 @@
 from typing import Union
+from dependencies import get_user
+from models import User
 from utils.google_auth import validate_token
 from utils.auth import Auth
 from utils.validate_credentials import validate_email, validate_password
@@ -58,8 +60,7 @@ async def signup(form_data: OAuth2PasswordRequestForm = Depends()):
     new_user = await db["users"].insert_one({"email": email, "hashed_password": hashed_password, "active": True})
 
     # return tokens to autologin
-    tokens = await login(form_data)
-    return tokens
+    return grant_user_tokens(new_user.inserted_id)
     
 def grant_user_tokens(user_id):
     access_token = auth_handler.encode_token(str(user_id))
@@ -151,12 +152,8 @@ async def revoke_all_refresh_tokens(credentials: HTTPAuthorizationCredentials = 
 
 
 @router.get('/secret')
-def secret_data(ads_id: Union[str, None] = Cookie(default=None)):
-    return {"ads_id": ads_id}
-# def secret_data(credentials: HTTPAuthorizationCredentials = Security(security)):
-#     token = credentials.credentials
-#     if(auth_handler.decode_token(token)):
-#         return 'Top Secret data only authorized users can access this info'
+def secret_data(user: User = Depends(get_user)):
+    return {"email": user["email"]}
 
 @router.get('/notsecret')
 def not_secret_data():
