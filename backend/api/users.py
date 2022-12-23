@@ -1,4 +1,4 @@
-from backend.utils.google_auth import validate_token
+from utils.google_auth import validate_token
 from utils.auth import Auth
 from utils.validate_credentials import validate_email, validate_password
 from fastapi import APIRouter
@@ -8,6 +8,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
+from fastapi import Request
 from dotenv import load_dotenv
 import os
 from utils.database import db
@@ -87,10 +88,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
     return grant_user_tokens(user["_id"])
 
+
 @router.post("/authenticate_with_google")
-async def authenticate_with_google(token: str):
+async def authenticate_with_google(request: Request):
     # validate token
-    token_info = validate_token(token)
+    # TODO: make model for input
+    request = await request.json()
+    token_info = validate_token(request["access_token"])
     email = token_info["email"]
 
     # check to make sure email is not already in use with non-google account
