@@ -3,7 +3,7 @@ export default (state, action) => {
         case 'SET_AUTH_STATE':
             return {
                 ...state,
-                isAuthed: action.payload
+                isAuthed: localStorage.setItem("isAuthed", action.payload)
             }
         default:
             return state;

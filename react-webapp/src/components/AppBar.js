@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useState, useEffect } from 'react';
 
 import { GlobalContext } from "../state/GlobalState";
+import { signOut } from "../utils/auth";
 // Components
 import AuthModal from "./AuthModal";
 
@@ -12,11 +13,15 @@ function AppBar(props) {
 
   const [authModalType, setAuthModalType] = useState(null);
 
-  const { isAuthed } = useContext(GlobalContext);
+  const { isAuthed, setAuthState } = useContext(GlobalContext);
 
   const logIn = async () => { setAuthModalType("login") }
   const signUp = async () => { setAuthModalType("signup") }
-  const signOut = async () => { }
+  const signOutWrapper = async () => {
+    signOut()
+    setAuthState(false)
+    localStorage.removeItem("isAuthed")
+  }
 
   return (
     <>
@@ -27,7 +32,7 @@ function AppBar(props) {
           {isAuthed ? (
             <div>
               <div className="flex flex-row">
-                <Button onClick={signOut} text={"Sign out"} size={"md"} disabled={false} type="primary" />
+                <Button onClick={signOutWrapper} text={"Sign out"} size={"md"} disabled={false} type="primary" />
               </div>
             </div>
           ) : (

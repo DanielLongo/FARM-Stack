@@ -4,39 +4,54 @@ import decodeJwt from 'jwt-decode';
 import { TokenStorage } from "./token_storage";
 
 export const login = async (username, password) => {
-    let formdata = new FormData();
-    formdata.append("username", username);
-    formdata.append("password", password);
+    try {
+        let formdata = new FormData();
+        formdata.append("username", username);
+        formdata.append("password", password);
 
-    let requestOptions = {
-        method: 'POST',
-        body: formdata
-    };
+        let requestOptions = {
+            method: 'POST',
+            body: formdata
+        };
 
-    let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions)
-    const tokens = await fetch(request)
-    TokenStorage.setItem("access_token_", tokens.access_token)
-    TokenStorage.setItem("refresh_token_", tokens.refresh_token)
-    return "success"
+        let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions)
+        const tokens = await fetch(request)
+        if (!tokens.ok)
+            throw new Error(tokens.statusText);
+
+        TokenStorage.setItem("access_token_", tokens.access_token)
+        TokenStorage.setItem("refresh_token_", tokens.refresh_token)
+
+        return "success"
+    } catch (error) {
+        throw error
+    }
 }
 
 export const signUp = async (username, password) => {
-    let formdata = new FormData();
-    formdata.append("username", username);
-    formdata.append("password", password);
+    try {
+        let formdata = new FormData();
+        formdata.append("username", username);
+        formdata.append("password", password);
 
-    let requestOptions = {
-        method: 'POST',
-        body: formdata
-    };
+        let requestOptions = {
+            method: 'POST',
+            body: formdata
+        };
 
-    let request = new Request(`${API_ENDPOINT}/users/signup`, requestOptions)
+        let request = new Request(`${API_ENDPOINT}/users/signup`, requestOptions)
 
-    const tokens = await fetch(request)
-    TokenStorage.setItem("access_token_", tokens.access_token)
-    TokenStorage.setItem("refresh_token_", tokens.refresh_token)
-    console.log(tokens);
-    return "success"
+        const tokens = await fetch(request)
+        if (!tokens.ok)
+            throw new Error(tokens.statusText);
+
+        TokenStorage.setItem("access_token_", tokens.access_token)
+        TokenStorage.setItem("refresh_token_", tokens.refresh_token)
+
+        return "success"
+    } catch (error) {
+        throw error
+    }
 }
 
 export const signOut = async () => {

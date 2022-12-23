@@ -11,18 +11,6 @@ import { useNavigate } from "react-router-dom";
 function Home() {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const testIfLoggedIn = async () => {
-            console.log("testIfLoggedIn")
-            const isAuthed = TokenStorage.isLoggedIn();
-            console.log("isAuthed", isAuthed)
-            if (!isAuthed) {
-                navigate("/");
-            }
-        }
-        testIfLoggedIn();
-    }, [])
-
     return (
         <div>
             <AppBar />
