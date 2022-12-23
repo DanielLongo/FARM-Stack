@@ -4,6 +4,7 @@ import Modal from '../components/Modal';
 import { googleAuth, signUp } from '../utils/auth';
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from '../state/GlobalState';
+import { toast } from "react-toastify"
 
 function SignUpForm({ onClose, showLogin }) {
     const navigate = useNavigate();
@@ -16,10 +17,10 @@ function SignUpForm({ onClose, showLogin }) {
         try {
             await signUp(email, password)
             setAuthState(true)
-
-            navigate('/Home');
+            navigate('/home');
         } catch (e) {
             console.log(e)
+            toast.error(e)
         }
     }
 

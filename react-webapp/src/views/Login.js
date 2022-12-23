@@ -11,7 +11,16 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = async () => { }
+    const handleLogin = async () => {
+        try {
+            await login(email, password)
+            setAuthState(true)
+            navigate('/home');
+        } catch (e) {
+            console.log(e)
+            toast.error(e)
+        }
+    }
 
     return (
         <Modal onClose={onClose}>

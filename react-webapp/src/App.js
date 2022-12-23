@@ -6,7 +6,8 @@ import './App.css'
 import {
   BrowserRouter,
   Routes,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom';
 
 import Home from './pages/Home';
@@ -30,11 +31,8 @@ function App() {
         <ToastContainer />
         <BrowserRouter>
           <Routes>
-            {isAuthed ? (
-              <Route path="/home" element={<Home />} />
-            ) : (
-              <Route path="/" element={<Landing />} />
-            )}
+            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Landing />} />
           </Routes>
         </BrowserRouter>
       </GlobalProvider>
