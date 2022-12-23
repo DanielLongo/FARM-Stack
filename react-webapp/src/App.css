@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer components {
-  .btn-primary {
-    @apply whitespace-nowrap px-4 py-2 text-white font-semibold bg-blue-800 rounded-lg hover:bg-blue-300 hover:text-gray-800
-  }
+    .btn-primary {
+        @apply whitespace-nowrap px-4 py-2 text-white font-semibold bg-blue-800 rounded-lg hover:bg-blue-300 hover:text-gray-800
+    }
 }

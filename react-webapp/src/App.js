@@ -1,41 +1,44 @@
-import logo from './logo.svg';
+import { useContext } from 'react';
+import { GlobalProvider, GlobalContext } from './state/GlobalState';
+
+import './App.css'
+
 import {
   BrowserRouter,
   Routes,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom';
-import './App.css';
+
 import Home from './pages/Home';
 import Landing from './pages/Landing';
-import { ToastContainer, toast } from 'react-toastify';
+
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Amplify } from 'aws-amplify'
-import aws_exports from './aws-exports';
+
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GOOGLE_CLIENT_ID } from './constants';
-try {
-  Amplify.configure(aws_exports);
-} catch (e) {
-  console.log("error", e);
-}
+
 
 function App() {
-  
 
+  const { isAuthed } = useContext(GlobalContext);
 
   return (
-    <>
-    <ToastContainer />
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing/>} />
-        <Route path="/home" element={<Home/>} />
-      </Routes>
-      </BrowserRouter>
-      </GoogleOAuthProvider>
-    </>
-  )
+
+      <GlobalProvider>
+        <ToastContainer />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Landing />} />
+          </Routes>
+        </BrowserRouter>
+      </GlobalProvider>
+    </GoogleOAuthProvider>
+
+  );
 }
 
 export default App;

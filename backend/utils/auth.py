@@ -1,10 +1,11 @@
 import os
-from jose import JWTError, jwt
-from fastapi import HTTPException
 from datetime import datetime, timedelta
-from passlib.context import CryptContext
-import os 
+
 from dotenv import load_dotenv
+from fastapi import HTTPException
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+
 load_dotenv()
 
 

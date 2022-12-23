@@ -1,75 +1,41 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
+
 import AppBar from '../components/AppBar';
 import Footer from '../components/Footer';
-import LoginForm from '../views/Login';
-import SignUpForm from '../views/SignUp';
-import PasswordResetForm from '../views/RequestPasswordReset';
-import ConfirmSignUpForm from '../views/ConfirmSignUp';
-import {Auth} from 'aws-amplify';
-import SetPasswordForm from '../views/SetPassword';
 
+import Button from "../components/UI/Button"
+
+/**
+ * The first page a user sees when they visit the site. This page should be a simple description of the
+ * product and a call to action to sign up for the beta.
+ */
 function Landing(props) {
-    // keep track of which auth modal to display (0 = none, 1 = login, 2 = sign up, 3 = password reset)
-    const [authModalDisplay, setAuthModalDisplay] = useState(0);
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
 
-    // needs to be written (save to a database?)
-    const handleRequestDemo = async () => {
-    }
+    const [email, setEmail] = useState('');
 
+    /**
+     * Handle the call to action
+     */
+    const callToAction = () => { }
 
-    const closeModal = () => {
-        setAuthModalDisplay(0);
-    }
-
-
-  return (
-    <div>
-        { 
-            authModalDisplay === 5 ? <SetPasswordForm onClose={closeModal} username={username}/> :
-            authModalDisplay === 4 ? <ConfirmSignUpForm onClose={closeModal} username={username}/> :
-            authModalDisplay === 3 ? <PasswordResetForm initialUsername={username} onClose={closeModal} setUsername={setUsername} showSetPassword={() => setAuthModalDisplay(5)}/> :
-            authModalDisplay === 2 ? <SignUpForm onClose={closeModal} showLogin={() => setAuthModalDisplay(1)} showConfirm={() => setAuthModalDisplay(4)} setUsername={setUsername}/> :
-            authModalDisplay === 1 && <LoginForm onClose={closeModal} showSignUp={() => setAuthModalDisplay(2)} showPasswordReset={() => setAuthModalDisplay(3)} setUsername={setUsername} showConfirm={() => setAuthModalDisplay(4)}/>
-        }
-        <AppBar showSignUp={() => setAuthModalDisplay(2)} showLogin={() =>setAuthModalDisplay(1)}/>
-        <div className='pt-40 flex  md:mx-16 lg:mx-32 justify-center h-screen'>
-            <div className='flex flex-col md:flex-row justify-center'>
-                <div className='flex flex-col px-16 w-full md:w-1/2'>
-                    <h1 className="text-7xl font-bold w-full text-left">
-                    Insert Large Header Here
+    return (
+        <div>
+            <AppBar />
+            <div className='p-20 justify-center h-screen'>
+                <div className='w-full rounded-md p-16 flex flex-col justify-center items-center'>
+                    <h1 className='font-CerealXBd lg:text-5xl text-3xl mb-6 bg-gradient-to-r bg-clip-text text-transparent
+                    from-emerald-500 via-indigo-500 to-emerald-500
+                    animate-text'>Header goes here
                     </h1>
-                    <h1 className="text-lg mt-8 w-full text-left">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-                    </h1>
-                    <div className='flex flex-col md:flex-row mt-4'>
-                    <div className='w-full mr-4 mb-4 md:mb-0'>
-                    <input
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-2 placeholder-slate-500 bg-slate-100 focus:bg-white rounded-lg focus:border-slate-500"
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        />
-                    </div>
-                    <button onClick={handleRequestDemo} className="btn-primary mb-4">
-                        Call to Action
-                    </button>                    
-                    </div>
-                </div>
-                <div className='flex flex-col w-full md:w-1/2 mt-8 md:mt-0'>
-                    <h1 className="text-3xl font-bold w-full text-center">
-                    Insert Prototype Here
-                    </h1>
+                    <p className='font-CerealBK text-slate-500 mb-8 lg:text-center lg:text-lg text-md'>
+                        Description goes here
+                    </p>
+                    <Button onClick={callToAction} text={"Call to action"} size={"md"} disabled={false} type="secondary" />
                 </div>
             </div>
-
+            <Footer />
         </div>
-        <Footer/>
-    </div>
-  );
+    );
 }
 
 export default Landing;
