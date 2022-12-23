@@ -17,7 +17,7 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
 
     const handleLogin = async () => {
         try {
-            console.log(await login(email, password));
+            await login(email, password)
             setAuthState(true)
             navigate('/home');
         } catch (e) {

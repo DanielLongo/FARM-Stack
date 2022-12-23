@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import { GlobalContext } from "../state/GlobalState";
 import { signOut } from "../utils/auth";
@@ -10,7 +11,7 @@ import AuthModal from "./AuthModal";
 import Button from "./UI/Button";
 
 function AppBar(props) {
-
+  const navigate = useNavigate();
   const [authModalType, setAuthModalType] = useState(null);
 
   const { isAuthed, setAuthState } = useContext(GlobalContext);
@@ -20,7 +21,8 @@ function AppBar(props) {
   const signOutWrapper = async () => {
     signOut()
     setAuthState(false)
-    localStorage.removeItem("isAuthed")
+    localStorage.removeItem("isAuthed");
+    navigate('/');
   }
 
   return (

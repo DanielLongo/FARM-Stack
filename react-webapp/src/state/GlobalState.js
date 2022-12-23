@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from 'react';
 import AppReducer from './AppReducer';
 
 const initialState = {
-    isAuthed: localStorage.getItem("isAuthed"),
+    isAuthed: JSON.parse(localStorage.getItem("isAuthed")),
     user: {}
 }
 

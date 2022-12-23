@@ -55,12 +55,12 @@ export const signUp = async (username, password) => {
 }
 
 export const signOut = async () => {
-    let requestOptions = {
-        method: 'POST',
-    };
+    // let requestOptions = {
+    //     method: 'POST',
+    // };
 
-    let request = new Request(`${API_ENDPOINT}/users/logout`, requestOptions)
-    const response = await fetch(request, requestOptions);
+    // let request = new Request(`${API_ENDPOINT}/users/logout`, requestOptions)
+    // const response = await fetch(request, requestOptions);
 
     TokenStorage.removeItem("access_token_")
     TokenStorage.removeItem("refresh_token_")
