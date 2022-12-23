@@ -30,24 +30,26 @@ function AppBar(props) {
       <div className="backdrop-blur-xl bg-slate-0/[.65] bg-red p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-9 md:mx-16 lg:mx-32">
         <a href="/"><h1 className="text-xl text-black">[App Name]</h1></a>
         <div>
-          {JSON.parse(localStorage.getItem("isAuthed")) ? (
-            <div>
-              <div className="flex flex-row">
-                <Button onClick={signOutWrapper} text={"Sign out"} size={"md"} disabled={false} type="primary" />
+          {
+            JSON.parse(localStorage.getItem("isAuthed")) ? (
+              <div>
+                <div className="flex flex-row">
+                  <Button onClick={signOutWrapper} text={"Sign out"} size={"md"} disabled={false} type="primary" />
+                </div>
               </div>
-            </div>
-          ) : (
-            <div>
-              <div className="flex flex-row">
-                <Button onClick={logIn} text={"Login"} size={"md"} disabled={false} type="primary" />
-                <span className="w-2"></span>
-                <Button onClick={signUp} text={"Signup"} size={"md"} disabled={false} type="secondary" />
+            ) : (
+              <div>
+                <div className="flex flex-row">
+                  <Button onClick={logIn} text={"Login"} size={"md"} disabled={false} type="primary" />
+                  <span className="w-2"></span>
+                  <Button onClick={signUp} text={"Signup"} size={"md"} disabled={false} type="secondary" />
+                </div>
               </div>
-            </div>
-          )}
+            )
+          }
 
-        </div>
-      </div>
+        </div >
+      </div >
     </>
   );
 }

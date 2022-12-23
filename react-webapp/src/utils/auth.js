@@ -15,15 +15,16 @@ export const login = async (username, password) => {
         };
 
         let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions)
-        const tokens = await fetch(request)
-        if (!tokens.ok) {
-            let details = await tokens.json().then(data => data)
+        let res = await fetch(request)
+        if (!res.ok) {
+            let details = await res.json().then(data => data)
             if (details["detail"]) {
                 throw new Error(details["detail"]);
             } else {
-                throw new Error(tokens.statusText);
+                throw new Error(res.statusText);
             }
         } else {
+            let tokens = await res.json()
             TokenStorage.setItem("access_token_", tokens.access_token)
             TokenStorage.setItem("refresh_token_", tokens.refresh_token)
 
@@ -47,15 +48,16 @@ export const signUp = async (username, password) => {
 
         let request = new Request(`${API_ENDPOINT}/users/signup`, requestOptions)
 
-        const tokens = await fetch(request)
-        if (!tokens.ok) {
-            let details = await tokens.json().then(data => data)
+        let res = await fetch(request)
+        if (!res.ok) {
+            let details = await res.json().then(data => data)
             if (details["detail"]) {
                 throw new Error(details["detail"]);
             } else {
-                throw new Error(tokens.statusText);
+                throw new Error(res.statusText);
             }
         } else {
+            let tokens = await res.json()
             TokenStorage.setItem("access_token_", tokens.access_token)
             TokenStorage.setItem("refresh_token_", tokens.refresh_token)
 
@@ -98,11 +100,28 @@ export const googleAuth = async (access_token) => {
     };
 
     let request = new Request(`${API_ENDPOINT}/users/authenticate_with_google`, requestOptions)
-    const tokens = await fetch(request)
+    let res = await fetch(request)
+    let tokens = await res.json()
     TokenStorage.setItem("access_token_", tokens.access_token)
     TokenStorage.setItem("refresh_token_", tokens.refresh_token)
     return "success"
 }
+
+export const refreshAccessToken = async () => {
+    let requestOptions = {
+        method: 'POST',
+        headers: {
+            'credentials': 'include',
+        }
+    }
+    let request = new Request(`${API_ENDPOINT}/users/refresh_token`, requestOptions)
+    let tokens = await fetch(request)
+    tokens = await tokens.json()
+    TokenStorage.setItem("access_token_", tokens.access_token)
+    TokenStorage.setItem("refresh_token_", tokens.refresh_token)
+    return "success"
+}
+
 
 export const forgotPassword = async (username) => {
     console.log("forgetPassword")

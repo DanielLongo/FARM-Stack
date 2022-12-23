@@ -1,19 +1,23 @@
-from typing import Union
-from utils.google_auth import validate_token
-from utils.auth import Auth
-from utils.validate_credentials import validate_email, validate_password
-from fastapi import APIRouter
-from fastapi import HTTPException, Security
-from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from passlib.context import CryptContext
-from datetime import datetime, timedelta
-from fastapi import Request
-from fastapi import Cookie
-from dotenv import load_dotenv
 import os
+from datetime import datetime, timedelta
+from typing import Union
+
+from dependencies import get_user
+from dotenv import load_dotenv
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Security
+from fastapi.security import (
+    HTTPAuthorizationCredentials,
+    HTTPBearer,
+    OAuth2PasswordBearer,
+    OAuth2PasswordRequestForm,
+)
+from models import User
+from passlib.context import CryptContext
+from utils.auth import Auth
 from utils.database import db
+from utils.google_auth import validate_token
+from utils.validate_credentials import validate_email, validate_password
+
 load_dotenv()
 
 router = APIRouter()
@@ -58,8 +62,7 @@ async def signup(form_data: OAuth2PasswordRequestForm = Depends()):
     new_user = await db["users"].insert_one({"email": email, "hashed_password": hashed_password, "active": True})
 
     # return tokens to autologin
-    tokens = await login(form_data)
-    return tokens
+    return grant_user_tokens(new_user.inserted_id)
     
 def grant_user_tokens(user_id):
     access_token = auth_handler.encode_token(str(user_id))
@@ -151,12 +154,8 @@ async def revoke_all_refresh_tokens(credentials: HTTPAuthorizationCredentials = 
 
 
 @router.get('/secret')
-def secret_data(ads_id: Union[str, None] = Cookie(default=None)):
-    return {"ads_id": ads_id}
-# def secret_data(credentials: HTTPAuthorizationCredentials = Security(security)):
-#     token = credentials.credentials
-#     if(auth_handler.decode_token(token)):
-#         return 'Top Secret data only authorized users can access this info'
+def secret_data(user: User = Depends(get_user)):
+    return {"email": user["email"]}
 
 @router.get('/notsecret')
 def not_secret_data():
