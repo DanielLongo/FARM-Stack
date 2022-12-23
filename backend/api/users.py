@@ -1,3 +1,4 @@
+from typing import Union
 from utils.google_auth import validate_token
 from utils.auth import Auth
 from utils.validate_credentials import validate_email, validate_password
@@ -9,6 +10,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from fastapi import Request
+from fastapi import Cookie
 from dotenv import load_dotenv
 import os
 from utils.database import db
@@ -149,10 +151,12 @@ async def revoke_all_refresh_tokens(credentials: HTTPAuthorizationCredentials = 
 
 
 @router.get('/secret')
-def secret_data(credentials: HTTPAuthorizationCredentials = Security(security)):
-    token = credentials.credentials
-    if(auth_handler.decode_token(token)):
-        return 'Top Secret data only authorized users can access this info'
+def secret_data(ads_id: Union[str, None] = Cookie(default=None)):
+    return {"ads_id": ads_id}
+# def secret_data(credentials: HTTPAuthorizationCredentials = Security(security)):
+#     token = credentials.credentials
+#     if(auth_handler.decode_token(token)):
+#         return 'Top Secret data only authorized users can access this info'
 
 @router.get('/notsecret')
 def not_secret_data():
