@@ -2,6 +2,7 @@ anyio==3.6.2
 bcrypt==4.0.1
 boto3==1.26.34
 botocore==1.29.34
+cachetools==5.2.0
 certifi==2022.6.15
 cffi==1.15.1
 charset-normalizer==2.0.12
@@ -11,6 +12,7 @@ cryptography==38.0.4
 dnspython==2.2.1
 ecdsa==0.18.0
 fastapi==0.88.0
+google-auth==2.15.0
 h11==0.14.0
 httptools==0.5.0
 idna==3.3
@@ -18,6 +20,7 @@ jmespath==1.0.1
 motor==3.1.1
 passlib==1.7.4
 pyasn1==0.4.8
+pyasn1-modules==0.2.8
 pycparser==2.21
 pydantic==1.10.2
 pymongo==4.3.3

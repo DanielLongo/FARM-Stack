@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { XIcon, Heros } from "@heroicons/react/solid";
 import Modal from '../components/Modal';
 import { googleAuth, signUp } from '../utils/auth';
 import { useNavigate } from "react-router-dom";
+import { GlobalContext } from '../state/GlobalState';
 
 function SignUpForm({ onClose, showLogin }) {
+    const navigate = useNavigate();
+    const { setAuthState } = useContext(GlobalContext);
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSignUp = () => {
-        signUp(email, password)
+    const handleSignUp = async () => {
+        try {
+            await signUp(email, password)
+            setAuthState(true)
+
+            navigate('/Home');
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     return (

@@ -24,7 +24,7 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
                 </div>
                 <div className='flex flex-row items-center justify-around mb-16'>
                     <div className='px-12'>
-                        <h1 className="text-2xl text-center font-bold text-left mb-8">Login</h1>
+                        <h1 className="text-2xl text-center font-bold mb-8">Login</h1>
                         <GoogleAuth />
                         <hr class="mt-8 mb-6 h-0.5 bg-gray-100 rounded border-0 dark:bg-gray-100" />
                         {/* <form> */}

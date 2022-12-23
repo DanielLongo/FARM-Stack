@@ -35,6 +35,7 @@ export const signUp = async (username, password) => {
     const tokens = await fetch(request)
     TokenStorage.setItem("access_token_", tokens.access_token)
     TokenStorage.setItem("refresh_token_", tokens.refresh_token)
+    console.log(tokens);
     return "success"
 }
 
