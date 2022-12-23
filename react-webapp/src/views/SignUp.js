@@ -11,7 +11,7 @@ function SignUpForm({onClose, showLogin, showConfirm}) {
     
     const handleSignUp = async () => {
         // no addtional attributes so empty {}
-        const user = await signUp(email, password, {}, () => {})
+        const user = await signUp(email, password)
         // console.log('user', user)
         // uncomment if you want to show the confirm modal after signup
         // showConfirm()

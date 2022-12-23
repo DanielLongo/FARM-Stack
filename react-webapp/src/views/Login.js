@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import {XIcon, Heros} from "@heroicons/react/solid";
 import Modal from '../components/Modal';
-import {login, resendConfirmationCode, googleAuth} from '../utils/auth';
+// import {login, resendConfirmationCode, googleAuth} from '../utils/auth';
+import {login, googleAuth} from '../utils/auth';
 import { Auth } from 'aws-amplify';
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ function LoginForm({onClose, showSignUp, showPasswordReset, showConfirm, setUser
         onClose();
         navigation('/home')
     } else if (response === 'UserNotConfirmedException') {
-        resendConfirmationCode(email)
+        // resendConfirmationCode(email)
         setUsername(email)
         showConfirm()
     }

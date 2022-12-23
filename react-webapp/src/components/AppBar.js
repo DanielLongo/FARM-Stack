@@ -7,11 +7,11 @@ import { useNavigate } from "react-router-dom";
 function AppBar(props) {
   const [user, setUser] = useState(null);
   useEffect(() => {
-    Auth.currentAuthenticatedUser().then((user) => {
-      setUser(user);
-    }).catch((err) => {
-      console.log("user not logged in", err)
-    })
+    // Auth.currentAuthenticatedUser().then((user) => {
+    //   setUser(user);
+    // }).catch((err) => {
+    //   console.log("user not logged in", err)
+    // })
     }, [])
 
     const navigate = useNavigate();

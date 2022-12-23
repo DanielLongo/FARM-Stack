@@ -3,11 +3,18 @@ from jose import JWTError, jwt
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
+import json
+import os 
+from dotenv import load_dotenv
+load_dotenv()
 
 
 class Auth():
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    secret = os.getenv("APP_SECRET_STRING")
+    def __init__(self):
+        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        self.secret = os.getenv("JWT_SECRET_KEY")
+        self.access_token_expire_minutes = float(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+        self.refresh_token_expire_days = float(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
 
     def encode_password(self, password):
         return self.pwd_context.hash(password)
@@ -17,8 +24,8 @@ class Auth():
     
     def encode_token(self, username):
         payload = {
-            'exp' : datetime.utcnow() + timedelta(days=0, minutes=30),
-            'iat' : datetime.utcnow(),
+            'exp' : (datetime.utcnow() + timedelta(days=0, minutes=self.access_token_expire_minutes)).timestamp(),
+            'iat' : datetime.utcnow().timestamp(),
             'scope': 'access_token',
             'sub' : username
         }
@@ -37,12 +44,13 @@ class Auth():
             raise HTTPException(status_code=401, detail='Token expired')
         except jwt.InvalidTokenError:
             raise HTTPException(status_code=401, detail='Invalid token')
+        raise HTTPException(status_code=401, detail='Invalid token')
     
     def encode_refresh_token(self, username):
         payload = {
-            'exp' : datetime.utcnow() + timedelta(days=0, hours=10),
+            'exp' : datetime.utcnow() + timedelta(days=self.refresh_token_expire_days, hours=0),
             'iat' : datetime.utcnow(),
-	    'scope': 'refresh_token',
+	        'scope': 'refresh_token',
             'sub' : username
         }
         return jwt.encode(

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {XIcon, Heros} from "@heroicons/react/solid";
 import Modal from '../components/Modal';
-import { confirmSignUp, resendConfirmationCode } from '../utils/auth';
+// import { confirmSignUp, resendConfirmationCode } from '../utils/auth';
 import { Auth } from 'aws-amplify';
 import { useNavigate } from "react-router-dom";
 
@@ -11,10 +11,10 @@ function ConfirmSignUpForm({onClose, username}) {
   const navigate = useNavigate();
 
   const handleConfirm = async () => {
-    const res = await confirmSignUp(username, confirmationCode)
-    if (res === "success") {
-        navigate('/home')
-    }
+    // const res = await confirmSignUp(username, confirmationCode)
+    // if (res === "success") {
+    //     navigate('/home')
+    // }
   }
 
 
@@ -42,7 +42,7 @@ function ConfirmSignUpForm({onClose, username}) {
                         <button onClick={handleConfirm} className="p-2 mb-4 w-full bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700 mt-4">
                             Confirm
                         </button>
-                        <button onClick={() => resendConfirmationCode(username)} className="p-2 mb-4 w-full bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700 mt-4">
+                        <button onClick={() => console.log("resending")} className="p-2 mb-4 w-full bg-transparent border-[1px] border-black rounded-lg hover:bg-gray-200 hover:text-gray-700 mt-4">
                             Resend Email
                         </button>
                 </div>
