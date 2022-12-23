@@ -19,8 +19,7 @@ function SignUpForm({ onClose, showLogin }) {
             setAuthState(true)
             navigate('/home');
         } catch (e) {
-            console.log(e)
-            toast.error(e)
+            toast.error(e.message)
         }
     }
 

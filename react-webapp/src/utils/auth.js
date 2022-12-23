@@ -16,13 +16,19 @@ export const login = async (username, password) => {
 
         let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions)
         const tokens = await fetch(request)
-        if (!tokens.ok)
-            throw new Error(tokens.statusText);
+        if (!tokens.ok) {
+            let details = await tokens.json().then(data => data)
+            if (details["detail"]) {
+                throw new Error(details["detail"]);
+            } else {
+                throw new Error(tokens.statusText);
+            }
+        } else {
+            TokenStorage.setItem("access_token_", tokens.access_token)
+            TokenStorage.setItem("refresh_token_", tokens.refresh_token)
 
-        TokenStorage.setItem("access_token_", tokens.access_token)
-        TokenStorage.setItem("refresh_token_", tokens.refresh_token)
-
-        return "success"
+            return "success"
+        }
     } catch (error) {
         throw error
     }
@@ -42,13 +48,19 @@ export const signUp = async (username, password) => {
         let request = new Request(`${API_ENDPOINT}/users/signup`, requestOptions)
 
         const tokens = await fetch(request)
-        if (!tokens.ok)
-            throw new Error(tokens.statusText);
+        if (!tokens.ok) {
+            let details = await tokens.json().then(data => data)
+            if (details["detail"]) {
+                throw new Error(details["detail"]);
+            } else {
+                throw new Error(tokens.statusText);
+            }
+        } else {
+            TokenStorage.setItem("access_token_", tokens.access_token)
+            TokenStorage.setItem("refresh_token_", tokens.refresh_token)
 
-        TokenStorage.setItem("access_token_", tokens.access_token)
-        TokenStorage.setItem("refresh_token_", tokens.refresh_token)
-
-        return "success"
+            return "success"
+        }
     } catch (error) {
         throw error
     }
