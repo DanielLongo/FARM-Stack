@@ -21,7 +21,6 @@ function AppBar(props) {
   const signOutWrapper = async () => {
     signOut()
     setAuthState(false)
-    localStorage.removeItem("isAuthed");
     navigate('/');
   }
 
@@ -31,7 +30,7 @@ function AppBar(props) {
       <div className="backdrop-blur-xl bg-slate-0/[.65] bg-red p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-9 md:mx-16 lg:mx-32">
         <a href="/"><h1 className="text-xl text-black">[App Name]</h1></a>
         <div>
-          {isAuthed ? (
+          {JSON.parse(localStorage.getItem("isAuthed")) ? (
             <div>
               <div className="flex flex-row">
                 <Button onClick={signOutWrapper} text={"Sign out"} size={"md"} disabled={false} type="primary" />
