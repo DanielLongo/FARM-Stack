@@ -1,21 +1,23 @@
-from typing import Union
-from dependencies import get_user
-from models import User
-from utils.google_auth import validate_token
-from utils.auth import Auth
-from utils.validate_credentials import validate_email, validate_password
-from fastapi import APIRouter
-from fastapi import HTTPException, Security
-from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from passlib.context import CryptContext
-from datetime import datetime, timedelta
-from fastapi import Request
-from fastapi import Cookie
-from dotenv import load_dotenv
 import os
+from datetime import datetime, timedelta
+from typing import Union
+
+from dependencies import get_user
+from dotenv import load_dotenv
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Security
+from fastapi.security import (
+    HTTPAuthorizationCredentials,
+    HTTPBearer,
+    OAuth2PasswordBearer,
+    OAuth2PasswordRequestForm,
+)
+from models import User
+from passlib.context import CryptContext
+from utils.auth import Auth
 from utils.database import db
+from utils.google_auth import validate_token
+from utils.validate_credentials import validate_email, validate_password
+
 load_dotenv()
 
 router = APIRouter()

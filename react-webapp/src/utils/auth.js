@@ -5,25 +5,31 @@ import { TokenStorage } from "./token_storage";
 
 export const login = async (username, password) => {
     try {
-    let formdata = new FormData();
-    formdata.append("username", username);
-    formdata.append("password", password);
-    
-    let requestOptions = {
-        method: 'POST',
-        body: formdata
-    };
+        let formdata = new FormData();
+        formdata.append("username", username);
+        formdata.append("password", password);
 
-    let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions)
-    let res = await fetch(request)
-    if (!res.ok)
-            throw new Error(tokens.statusText);
-    let tokens = await tokens.json()
+        let requestOptions = {
+            method: 'POST',
+            body: formdata
+        };
 
-    TokenStorage.setItem("access_token_", tokens.access_token)
-    TokenStorage.setItem("refresh_token_", tokens.refresh_token)
+        let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions)
+        let res = await fetch(request)
+        if (!res.ok) {
+            let details = await res.json().then(data => data)
+            if (details["detail"]) {
+                throw new Error(details["detail"]);
+            } else {
+                throw new Error(res.statusText);
+            }
+        } else {
+            let tokens = await res.json()
+            TokenStorage.setItem("access_token_", tokens.access_token)
+            TokenStorage.setItem("refresh_token_", tokens.refresh_token)
 
-    return "success"
+            return "success"
+        }
     } catch (error) {
         throw error
     }
@@ -31,26 +37,32 @@ export const login = async (username, password) => {
 
 export const signUp = async (username, password) => {
     try {
-    let formdata = new FormData();
-    formdata.append("username", username);
-    formdata.append("password", password);
+        let formdata = new FormData();
+        formdata.append("username", username);
+        formdata.append("password", password);
 
-    let requestOptions = {
-        method: 'POST',
-        body: formdata
-    };
+        let requestOptions = {
+            method: 'POST',
+            body: formdata
+        };
 
-    let request = new Request(`${API_ENDPOINT}/users/signup`, requestOptions)
-    let res = await fetch(request)
-    if (!res.ok)
-        throw new Error(tokens.statusText);
-    let tokens = await res.json()
-    console.log("tokens", tokens)
+        let request = new Request(`${API_ENDPOINT}/users/signup`, requestOptions)
 
-    TokenStorage.setItem("access_token_", tokens.access_token)
-    TokenStorage.setItem("refresh_token_", tokens.refresh_token)
+        let res = await fetch(request)
+        if (!res.ok) {
+            let details = await res.json().then(data => data)
+            if (details["detail"]) {
+                throw new Error(details["detail"]);
+            } else {
+                throw new Error(res.statusText);
+            }
+        } else {
+            let tokens = await res.json()
+            TokenStorage.setItem("access_token_", tokens.access_token)
+            TokenStorage.setItem("refresh_token_", tokens.refresh_token)
 
-    return "success"
+            return "success"
+        }
     } catch (error) {
         throw error
     }
