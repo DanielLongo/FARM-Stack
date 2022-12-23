@@ -1,3 +1,4 @@
+from backend.utils.google_auth import validate_token
 from utils.auth import Auth
 from utils.validate_credentials import validate_email, validate_password
 from fastapi import APIRouter
@@ -57,6 +58,20 @@ async def signup(form_data: OAuth2PasswordRequestForm = Depends()):
     tokens = await login(form_data)
     return tokens
     
+def grant_user_tokens(user_id):
+    access_token = auth_handler.encode_token(str(user_id))
+    refresh_token = auth_handler.encode_refresh_token(str(user_id))
+
+    # add refresh token to db
+    db["refresh_tokens"].insert_one(
+        {
+            "token_id": refresh_token,
+            "user_id": str(user_id),
+            "expireAt": datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+        }
+    )
+
+    return {"access_token": access_token, "refresh_token": refresh_token}
 
 @router.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -70,19 +85,27 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     if (user["active"] == False):
         raise HTTPException(status_code=400, detail="Account not activated")
 
-    access_token = auth_handler.encode_token(str(user["_id"]))
-    refresh_token = auth_handler.encode_refresh_token(str(user["_id"]))
+    return grant_user_tokens(user["_id"])
 
-    # add refresh token to db
-    db["refresh_tokens"].insert_one(
-        {
-            "token_id": refresh_token,
-            "user_id": str(user["_id"]),
-            "expireAt": datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-        }
-    )
+@router.post("/authenticate_with_google")
+async def authenticate_with_google(token: str):
+    # validate token
+    token_info = validate_token(token)
+    email = token_info["email"]
 
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    # check to make sure email is not already in use with non-google account
+    user = await db["users"].find_one({"email": email, "account_type": "inhouse"})
+    if user is not None:
+        raise HTTPException(status_code=400, detail="Invalid Email: Email already in use")
+    
+    # check to see if user already exists
+    user = await db["users"].find_one({"email": email, "account_type": "google", "google_id": token_info["sub"]})
+    if user is None:
+        # add new user to db
+        new_user = await db["users"].insert_one({"email": email, "account_type": "google", "google_id": token_info["sub"], "active": True})
+        user = await db["users"].find_one({"email": email, "account_type": "google", "google_id": token_info["sub"]})
+        
+    return grant_user_tokens(user["_id"])
 
 @router.post("/logout")
 async def logout(credentrials: HTTPAuthorizationCredentials = Security(security)):
