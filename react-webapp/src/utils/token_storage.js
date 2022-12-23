@@ -10,12 +10,6 @@ export class TokenStorage {
     static removeItem(key) {
         cookies.remove(key, { path: '/' });
     }
-    static setLoggedInStatus(status) {
-        cookies.set("isLoggedIn", status, { path: '/'});
-    }
-    static isLoggedIn() {
-        return cookies.get("isLoggedIn") === "true";
-    }
-  }
+}
 
   
