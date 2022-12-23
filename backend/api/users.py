@@ -1,19 +1,27 @@
 from typing import Union
+from backend.utils.auth import Auth
+from backend.utils.validate_credentials import validate_email, validate_password
 from dependencies import authenticate_user
 from fastapi import APIRouter
+from fastapi import HTTPException, Security
 from fastapi import Depends, FastAPI, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
+import time
 load_dotenv()
 
 router = APIRouter()
 
 from models import Token, UserInDB, User, TokenData
 from utils.email import send_password_reset_email
+
+auth_handler = Auth()
+security = HTTPBearer()
 
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
@@ -141,4 +149,63 @@ async def delete_me(current_user: User = Depends(get_current_active_user)):
 @router.post("/reset_password")
 def reset_password():
     pass
+
+@router.post("/signup")
+def signup(form_data: OAuth2PasswordRequestForm = Depends()):
+    email, password = form_data.username, form_data.password
+
+    # check to make sure email and password are valid
+    password_validation = validate_password(password)
+    if (password_validation != "success"):
+        HTTPException(status_code=400, detail="Invalid Password: " + password_validation)
+    email_validation = validate_email(email)
+    if (email_validation != "success"):
+        HTTPException(status_code=400, detail="Invalid Email: " + email_validation)
+
+    # TODO: check if email in db
+
+
+    hashed_password = auth_handler.encode_password(password)
+    user = {"email": email, "hashed_password": hashed_password, "created": time.time()}
+    
+    
+    # TODO: insert user into db
+
+    return login(form_data)
+
+@router.post("/login")
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    email, password = form_data.username, form_data.password
+
+    # TODO: get user from database
+    user = None
+
+    if (user == None):
+        HTTPException(status_code=400, detail="Invalid Email and/or Password")
+
+    if not auth_handler.verify_password(password, user["hashed_password"]):
+        HTTPException(status_code=400, detail="Invalid Email and/or Password")
+    
+    access_token = auth_handler.encode_token(user["_id"])
+    refresh_token = auth_handler.encode_refresh_token(user["_id"])
+    return {"access_token": access_token, "refresh_token": refresh_token}
+
+
+@router.post("/refresh_token")
+def refresh_token(credentrials: HTTPAuthorizationCredentials = Security(security)):
+    refresh_token = credentrials.credentials
+    new_token = auth_handler.refresh_token(refresh_token)
+    return {'access_token': new_token}
+
+@router.post('/secret')
+def secret_data(credentials: HTTPAuthorizationCredentials = Security(security)):
+    token = credentials.credentials
+    if(auth_handler.decode_token(token)):
+        return 'Top Secret data only authorized users can access this info'
+
+@router.get('/notsecret')
+def not_secret_data():
+    return 'Not secret data'
+
+
 

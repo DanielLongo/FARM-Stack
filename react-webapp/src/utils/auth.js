@@ -99,7 +99,7 @@ export const changePassword = async (email, code, password) => {
 }
 
 
-export const signUp = async (email, password, attributes) => {
+export const signUp = async (email, password, attributes, onSuccess) => {
     console.log("email", email, "password", password, "attributes", attributes)
     try {
         const { user } = await Auth.signUp({
@@ -111,15 +111,20 @@ export const signUp = async (email, password, attributes) => {
             }
         });
         console.log(user);
+        onSuccess();
     } catch (error) {
         if (error.message === "PreSignUp failed with error A user with this email already exists. Perhaps Social Sign was used in addition to a standard account..") {
             toast.error("Social Sign in or a standard account already exists with this email. Please login into existing account or use a new email address.")
         }
         // if (error.message === "")
-        console.log('error signing up:', error);
+        toast.error("Error", getErrorMessage(error))
     }
 }
 
+const getErrorMessage = (error) => {
+    const errorMessage = error.message.split(":")
+    return errorMessage[errorMessage.length - 1]
+}
 export const googleAuth = async () => {
     let user;
     try {

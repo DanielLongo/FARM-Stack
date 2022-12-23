@@ -46,6 +46,7 @@ function LoginForm({onClose, showSignUp, showPasswordReset, showConfirm, setUser
                     </div>
                     </button>
                     <hr class="mt-8 mb-6 h-0.5 bg-gray-100 rounded border-0 dark:bg-gray-100"/>
+                    {/* <form> */}
                         <label className='text-xs font-semibold' for="email">Email</label> 
                         <input
                             value={email}
@@ -68,6 +69,7 @@ function LoginForm({onClose, showSignUp, showPasswordReset, showConfirm, setUser
                         <button onClick={handleLogin} className="mb-4 mt-2 btn-primary w-full">
                             Login
                         </button>
+                        {/* </form> */}
                         <div className= 'flex flex-row justify-center'>
                         <p className="text-xs mb-2">Don't have an account? <a onClick={showSignUp} className='text-blue-800 cursor-pointer hover:underline'>Sign Up</a></p>
                         </div>
