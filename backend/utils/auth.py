@@ -3,7 +3,6 @@ from jose import JWTError, jwt
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
-import json
 import os 
 from dotenv import load_dotenv
 load_dotenv()
