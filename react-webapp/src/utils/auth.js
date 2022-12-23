@@ -60,8 +60,20 @@ export const logOutOfAllDevices = async () => {
     TokenStorage.removeItem("refresh_token_")
 }
 
-export const googleAuth = async () => {
-    console.log('google auth')
+export const googleAuth = async (access_token) => {
+    let requestOptions = {
+        method: 'POST',
+        body: JSON.stringify({ "access_token": access_token }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    let request = new Request(`${API_ENDPOINT}/users/authenticate_with_google`, requestOptions)
+    const tokens = await fetch(request)
+    TokenStorage.setItem("access_token_", tokens.access_token)
+    TokenStorage.setItem("refresh_token_", tokens.refresh_token)
+    return "success"
 }
 
 export const forgotPassword = async (username) => {
