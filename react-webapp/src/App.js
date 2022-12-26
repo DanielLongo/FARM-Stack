@@ -12,6 +12,7 @@ import {
 
 import Home from './pages/Home';
 import Landing from './pages/Landing';
+import PasswordReset from './pages/PasswordReset';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,6 +34,7 @@ function App() {
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/" element={<Landing />} />
+            <Route path="/password_reset" element={<PasswordReset />} />
           </Routes>
         </BrowserRouter>
       </GlobalProvider>

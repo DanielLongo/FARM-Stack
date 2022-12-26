@@ -27,6 +27,7 @@ router = APIRouter()
 auth_handler = Auth()
 security = HTTPBearer()
 
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 REFRESH_TOKEN_EXPIRE_DAYS = float(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
@@ -189,8 +190,29 @@ async def revoke_all_refresh_tokens(
 async def request_password_reset(params: Request):
     email = params.json()["email"]
     validate_email(email)
-    send_password_reset_email(email)
+    user = await db["users"].find_one({"email": email})
+    if user is None:
+        return {"message": "If account exists email sent"}
+    if user["account_type"] == "google":
+        raise HTTPException(status_code=400, detail="Cannot reset password for google account")
+    
+    # generate password reset token
+    password_reset_token = auth_handler.encode_password_reset_token(user["_id"])
+    await db["users"].update_one({"_id": user["_id"]}, {"$set": {"password_reset_token": password_reset_token}})
+    password_reset_link = f"{FRONTEND_URL}/reset-password?token={password_reset_token}"
+    res = send_password_reset_email(email, password_reset_link)
+    if res.status_code != "success":
+        raise HTTPException(status_code=500, detail="Error sending email. Please contact support.")
+    return {"message": "If account exists email sent"}
 
+@router.post("/reset_password")
+async def reset_password(params: Request):
+    password_reset_token = params.json()["token"]
+    password = params.json()["password"]
+    user_id = auth_handler.decode_password_reset_token(password_reset_token)
+    hashed_password = auth_handler.get_password_hash(password)
+    await db["users"].update_one({"_id": user_id}, {"$set": {"hashed_password": hashed_password, "password_reset_token": None}})
+    return {"message": "Password reset successful"}
 
 
 @router.get("/secret")

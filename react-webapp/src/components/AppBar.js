@@ -24,6 +24,7 @@ function AppBar(props) {
     navigate('/');
   }
 
+
   return (
     <>
       {authModalType && <AuthModal setAuthModalType={setAuthModalType} type={authModalType} />}

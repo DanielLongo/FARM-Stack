@@ -17,7 +17,7 @@ sg = SendGridAPIClient(SENDGRID_API_KEY)
 
 
 def send_password_reset_email(
-    email: str, action_url: str, name: str, device_description: str
+    email: str, action_url: str
 ):
     # loads email from html template
     with open("templaes/password_reset.html", "r") as f:
@@ -25,8 +25,7 @@ def send_password_reset_email(
 
     # Replace placeholders in the HTML with the actual values
     html_content = html_content.replace("{{action_url}}", action_url)
-    html_content = html_content.replace("{{name}}", name)
-    html_content = html_content.replace("{{device_description}}", device_description)
+    
     message = Mail(
         from_email=EMAIL_SENDER,
         to_emails=email,
