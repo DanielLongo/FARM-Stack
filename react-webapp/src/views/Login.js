@@ -44,7 +44,7 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
                         <input
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="mt-1 mb-4 px-4 py-2 placeholder-slate-500 bg-slate-100 focus:bg-white rounded-lg w-full focus:border-slate-500"
+                            className="mt-1 mb-4 input"
                             id="email"
                             type="email"
                             placeholder="Enter your email"
@@ -53,7 +53,7 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
                         <input
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="mt-1 px-4 py-2 placeholder-slate-500 bg-slate-100 focus:bg-white rounded-lg w-full focus:border-slate-500"
+                            className="mt-1 px-4 py-2 input"
                             id="password"
                             type="password"
                             placeholder="Enter your password"

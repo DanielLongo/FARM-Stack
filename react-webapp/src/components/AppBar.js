@@ -40,9 +40,9 @@ function AppBar(props) {
             ) : (
               <div>
                 <div className="flex flex-row">
-                  <Button onClick={logIn} text={"Login"} size={"md"} disabled={false} type="primary" />
+                  <button className="btn-secondary" onClick={logIn}>Login</button>
                   <span className="w-2"></span>
-                  <Button onClick={signUp} text={"Signup"} size={"md"} disabled={false} type="secondary" />
+                  <button className="btn-primary" onClick={signUp}>Sign Up</button>
                 </div>
               </div>
             )

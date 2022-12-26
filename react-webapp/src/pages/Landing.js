@@ -30,7 +30,8 @@ function Landing(props) {
                     <p className='font-CerealBK text-slate-500 mb-8 lg:text-center lg:text-lg text-md'>
                         Description goes here
                     </p>
-                    <Button onClick={callToAction} text={"Call to action"} size={"md"} disabled={false} type="secondary" />
+                    <button className='btn-primary mb-4' onClick={callToAction}>Call to action</button>
+                    {/* <Button onClick={callToAction} text={"Call to action"} size={"md"} disabled={false} type="secondary" /> */}
                 </div>
             </div>
             <Footer />

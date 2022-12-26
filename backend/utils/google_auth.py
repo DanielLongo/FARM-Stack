@@ -4,9 +4,11 @@ from fastapi import HTTPException
 import os
 import requests
 from dotenv import load_dotenv
+
 load_dotenv()
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+
 
 def validate_token(token):
     url = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + token
@@ -14,6 +16,3 @@ def validate_token(token):
     if response.status_code != 200:
         raise HTTPException(status_code=400, detail="Invalid Token")
     return response.json()
-
-
-    
