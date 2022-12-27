@@ -1,10 +1,8 @@
 import os
 from datetime import datetime, timedelta
-from typing import Union
-from utils.email.send import send_password_reset_email
-from dependencies import get_user_from_refresh_token
-
-from dependencies import get_user_from_access_token
+from app.utils.email.send import send_password_reset_email
+from app.dependencies import get_user_from_refresh_token
+from app.dependencies import get_user_from_access_token
 from dotenv import load_dotenv
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Security
 from fastapi.security import (
@@ -13,12 +11,12 @@ from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
 )
-from models import User
+from app.models import User
 from passlib.context import CryptContext
-from utils.auth import Auth
-from utils.database import db
-from utils.google_auth import validate_token
-from utils.validate_credentials import validate_email, validate_password
+from app.utils.auth import Auth
+from app.utils.database import db
+from app.utils.google_auth import validate_token
+from app.utils.validate_credentials import validate_email, validate_password
 
 load_dotenv()
 

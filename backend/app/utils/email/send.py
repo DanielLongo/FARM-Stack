@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 EMAIL_SENDER = os.getenv("EMAIL_SENDER")
-print("email sender: ", EMAIL_SENDER)
 SES_ID = os.getenv("SES_ID")
 SES_SECRET = os.getenv("SES_SECRET")
 AWS_REGION = os.getenv("AWS_REGION")
@@ -48,16 +47,6 @@ def send_email(recipient, subject, body):
     return "success"
 
 
-
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-# EMAIL_SENDER = os.getenv("SENDER")
-
-if SENDGRID_API_KEY is None:
-    # need api key? https://docs.sendgrid.com/for-developers/sending-email/api-getting-started
-    raise ValueError("SENDGRID_API_KEY not set")
-sg = SendGridAPIClient(SENDGRID_API_KEY)
-
-
 def send_password_reset_email(
     email: str, action_url: str
 ):
@@ -72,21 +61,7 @@ def send_password_reset_email(
 
 
 def test_mail_works():
-    # send_email("danieldominiclongo@gmail.com", "test email from daniel", "test")
     send_password_reset_email("danieldominiclongo@gmail.com", "/reset-password")
-    # message = Mail(
-    #     from_email="danieldominiclongo@gmail.com",
-    #     to_emails="danieldominiclongo@gmail.com",
-    #     subject="Sending with Twilio SendGrid is Fun",
-    #     html_content="<strong>and easy to do anywhere, even with Python</strong>",
-    # )
-    # try:
-    #     response = sg.send(message)
-    #     print(response.status_code)
-    #     print(response.body)
-    #     print(response.headers)
-    # except Exception as e:
-    #     print("error", e.message)
 
 
 if __name__ == "__main__":

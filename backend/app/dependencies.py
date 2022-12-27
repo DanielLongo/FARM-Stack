@@ -1,7 +1,7 @@
 from fastapi import Request, HTTPException, status
 from fastapi import Cookie
-from utils.auth import Auth
-from utils.database import db
+from app.utils.auth import Auth
+from app.utils.database import db
 from bson.objectid import ObjectId
 
 auth_handler = Auth()
