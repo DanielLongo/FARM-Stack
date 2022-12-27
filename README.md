@@ -1,16 +1,16 @@
 ### TODOs
 - [ ] key strokes for ui interactions (esc close modal, enter primary button...)
 - [x] fix double sign in (social + email)
-- [ ] conenct backend with db
-- [ ] auto create new entry in db for new user
-- [ ] user roles
+- [x] conenct backend with db
+- [x] auto create new entry in db for new user
+- [x] user roles
 - [ ] landing page 
 - [ ] account page
 - [ ] dockerize
 - [ ] deployment with github actions
 - [x] password reset
 - [ ] fix toasts
-- [ ] css classes for common componentes (input, secondary button...)
+- [x] css classes for common componentes (input, secondary button...)
 - [ ] react-native frontend*
 
 ### Farm Stack Template
