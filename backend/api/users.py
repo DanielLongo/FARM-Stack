@@ -212,6 +212,7 @@ async def reset_password(params: Request):
     user_id = auth_handler.decode_password_reset_token(password_reset_token)
     hashed_password = auth_handler.get_password_hash(password)
     await db["users"].update_one({"_id": user_id}, {"$set": {"hashed_password": hashed_password, "password_reset_token": None}})
+    await db["refresh_tokens"].delete_many({"user_id": user_id})
     return {"message": "Password reset successful"}
 
 
