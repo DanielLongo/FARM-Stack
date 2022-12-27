@@ -6,7 +6,7 @@
 - [x] user roles
 - [ ] landing page 
 - [ ] account page
-- [ ] dockerize
+- [x] dockerize
 - [ ] deployment with github actions
 - [x] password reset
 - [ ] fix toasts
