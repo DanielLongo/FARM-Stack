@@ -11,6 +11,7 @@ env:
 
 jobs:
   determine-env:
+    # if: ${{ github.event.pull_request.merged }}
     name: "determing env"
     runs-on: ubuntu-latest
     steps:
@@ -31,6 +32,7 @@ jobs:
     outputs:
       env_name: ${{ steps.branch_check.outputs.env_name }}
   deploy:
+    #if: github.event.pull_request.merged
     name: Deploy
     needs: [determine-env]
     runs-on: ubuntu-latest
@@ -66,4 +68,4 @@ jobs:
         run: |
             docker build --file ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-            echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG":q
+            echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
