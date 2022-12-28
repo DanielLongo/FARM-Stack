@@ -7,7 +7,6 @@ on:
 
 jobs:
   determine-env:
-    if: github.event.pull_request.merged
     name: "determing env"
     runs-on: ubuntu-latest
     steps:
