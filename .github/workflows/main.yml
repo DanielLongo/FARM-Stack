@@ -1,0 +1,72 @@
+name: Deploy Backend with AWS ECS
+
+on:
+  push:
+    branches: [production]
+
+env:
+  AWS_REGION: us-west-2
+  ECR_REPOSITORY: farm-stack
+
+
+jobs:
+  determine-env:
+    # if: ${{ github.event.pull_request.merged }}
+    name: "determing env"
+    runs-on: ubuntu-latest
+    steps:
+      - name: check which enviornment
+        id: branch_check
+        run: |
+          echo "Running on branch ${{ github.ref }}"
+          if [ "${{ github.ref }}" = "refs/heads/production" ]; then
+            echo "::set-output name=env_name::production"
+          elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "::set-output name=env_name::staging"
+          else
+            echo "::set-output name=env_name::none"
+          fi         
+              
+      - name: Use variable setup in previous step
+        run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"        
+    outputs:
+      env_name: ${{ steps.branch_check.outputs.env_name }}
+  deploy:
+    #if: github.event.pull_request.merged
+    name: Deploy
+    needs: [determine-env]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set Tag Number
+        id: tag-number
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - name: Check Tag Release
+        env:
+            RELEASE_VERSION: ${{ steps.tag-number.outputs.tag }}
+        run: |
+            echo $RELEASE_VERSION
+            echo ${{ steps.vars.outputs.tag }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+            role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+            aws-region: us-west-2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            IMAGE_TAG: ${{ steps.tag-number.outputs.tag }}
+        run: |
+            docker build --file ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
