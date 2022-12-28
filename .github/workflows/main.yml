@@ -4,6 +4,11 @@ on:
   push:
     branches: [production]
 
+env:
+  AWS_REGION: us-west-2
+  ECR_REPOSITORY: farm-stack
+
+
 jobs:
   determine-env:
     name: "determing env"
