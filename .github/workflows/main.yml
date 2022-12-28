@@ -2,11 +2,11 @@ name: Deploy Backend with AWS ECS
 
 on:
   pull_request:
-    # types: [closed]
     branches: [production]
 
 jobs:
   determine-env:
+    if: github.event.pull_request.merged
     name: "determing env"
     runs-on: ubuntu-latest
     steps:
