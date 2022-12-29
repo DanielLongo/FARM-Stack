@@ -47,7 +47,7 @@ workflows:
           aws-secret-access-key: AWS_ACCESS_KEY_SECRET
           aws-region: AWS_REGION
           family: '${MY_APP_PREFIX}-cluster-service'
-          cluster: 'default'
+          cluster: 'arn:aws:ecs:us-west-2:812645980729:cluster/default'
           container-image-name-updates: 'container=${MY_APP_PREFIX}-cluster-service,tag=${CIRCLE_SHA1}'
       - verify-deployment:
           requires:
