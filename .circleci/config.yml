@@ -32,9 +32,9 @@ workflows:
   build-and-deploy:
     jobs:
       - aws-ecr/build-and-push-image: # orb built-in job
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_KEY_SECRET
-          aws-region: AWS_REGION 
+          aws-access-key-id: '${AWS_ACCESS_KEY}'
+          aws-secret-access-key: '${AWS_ACCESS_KEY_SECRET}'
+          aws-region: '${AWS_REGION}' 
           path: 'backend/'
           repo: '${MY_APP_PREFIX}'
           tag: '${CIRCLE_SHA1}'
