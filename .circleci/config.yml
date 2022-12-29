@@ -37,6 +37,7 @@ workflows:
           registry-id: AWS_ECR_REGISTRY_ID
           region: '${AWS_REGION}' 
           path: 'backend/'
+          workspace-root: 'backend/'
           repo: '${MY_APP_PREFIX}'
           tag: '${CIRCLE_SHA1}'
       # - aws-ecs/deploy-service-update: # orb built-in job
