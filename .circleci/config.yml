@@ -34,6 +34,7 @@ workflows:
       - aws-ecr/build-and-push-image: # orb built-in job
           aws-access-key-id: AWS_ACCESS_KEY
           aws-secret-access-key: AWS_ACCESS_KEY_SECRET
+          registry-id: AWS_ECR_REGISTRY_ID
           region: AWS_REGION 
           path: 'backend/'
           repo: '${MY_APP_PREFIX}'
