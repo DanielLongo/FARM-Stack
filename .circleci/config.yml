@@ -46,9 +46,9 @@ workflows:
           aws-access-key-id: AWS_ACCESS_KEY
           aws-secret-access-key: AWS_ACCESS_KEY_SECRET
           aws-region: AWS_REGION
-          family: '${MY_APP_PREFIX}-service'
-          cluster: '${MY_APP_PREFIX}-cluster'
-          container-image-name-updates: 'container=${MY_APP_PREFIX}-service,tag=${CIRCLE_SHA1}'
+          family: '${MY_APP_PREFIX}-cluster-service'
+          cluster: 'default'
+          container-image-name-updates: 'container=${MY_APP_PREFIX}-cluster-service,tag=${CIRCLE_SHA1}'
       - verify-deployment:
           requires:
             - aws-ecs/deploy-service-update
