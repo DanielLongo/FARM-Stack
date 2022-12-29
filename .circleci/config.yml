@@ -11,9 +11,9 @@ jobs:
     steps:
       - aws-cli/install
       - aws-cli/setup:
-          aws-access-key-id: AWS_SECRET_ACCESS_KEY
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_ACCESS_KEY_SECRET
           aws-region: AWS_DEFAULT_REGION
-          aws-secret-access-key: AWS_DEFAULT_REGION
       - run:
           name: Get last task definition
           command: >
