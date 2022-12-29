@@ -1,4 +1,11 @@
 ### TODOs
+- [ ] account page 
+- [ ] auth QA
+- [ ] dashborad
+- [ ] deployment (circle ci)
+- [ ] password reset ui
+- [ ] react custom hooks
+
 - [ ] key strokes for ui interactions (esc close modal, enter primary button...)
 - [x] fix double sign in (social + email)
 - [x] conenct backend with db

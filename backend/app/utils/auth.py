@@ -24,7 +24,7 @@ class Auth:
     def verify_password(self, password, hash_password):
         return self.pwd_context.verify(password, hash_password)
 
-    def encode_token(self, username):
+    def encode_token(self, username, role=None):
         payload = {
             "exp": (
                 datetime.utcnow()
@@ -33,6 +33,7 @@ class Auth:
             "iat": datetime.utcnow().timestamp(),
             "scope": "access_token",
             "sub": username,
+            "role": role
         }
         return jwt.encode(payload, self.secret, algorithm="HS256")
 
