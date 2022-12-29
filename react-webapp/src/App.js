@@ -29,7 +29,7 @@ function App() {
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
 
       <GlobalProvider>
-        <ToastContainer />
+        <ToastContainer position="top-center" hideProgressBar autoClose={3000}/>
         <BrowserRouter>
           <Routes>
             <Route path="/home" element={<Home />} />

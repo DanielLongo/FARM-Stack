@@ -102,6 +102,7 @@ export const googleAuth = async (access_token) => {
     let request = new Request(`${API_ENDPOINT}/users/authenticate_with_google`, requestOptions)
     let res = await fetch(request)
     let tokens = await res.json()
+    console.log("tokens", tokens)
     TokenStorage.setItem("access_token_", tokens.access_token)
     TokenStorage.setItem("refresh_token_", tokens.refresh_token)
     return "success"

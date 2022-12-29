@@ -4,13 +4,13 @@ import { useSearchParams } from "react-router-dom";
 
 function PasswordReset() {
     const [searchParams, setSearchParams] = useSearchParams();
-    const 
+    // const 
 
-    useEffect(() => {
-        const token = searchParams.get("token");
-        if (token) {
+    // useEffect(() => {
+    //     const token = searchParams.get("token");
+    //     if (token) {
             
-        }
+    //     })
   return (
     <div>
         <AppBar/>

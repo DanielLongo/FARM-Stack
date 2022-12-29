@@ -2,17 +2,21 @@ import React from "react";
 import { useGoogleLogin } from '@react-oauth/google';
 import { googleAuth } from '../utils/auth';
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { GlobalContext } from "../state/GlobalState";
 
 
 function GoogleAuth() {
+    const { setAuthState } = useContext(GlobalContext);
     const navigation = useNavigate();
     const handleGoogleLogin = useGoogleLogin({
-        onSuccess: tokenResponse => {
-            const res = googleAuth(tokenResponse.access_token);
+        onSuccess: async tokenResponse => {
+            const res = await googleAuth(tokenResponse.access_token);
             if (res === "success") {
-                navigation.home();
+                setAuthState(true);
+                navigation("/home");
             } else {
-                alert("Google login failed");
+                alert("Google login failed. Try using email and password instead.");
             }
         },
         onFail: error => alert(error),
