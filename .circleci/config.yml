@@ -1,56 +1,105 @@
-version: 2.1 # 2.1 config required to use orbs
+# version: 2.1
 
-orbs:
-  aws-ecr: circleci/aws-ecr@8.2.1 # use the AWS ECR orb
-  aws-ecs: circleci/aws-ecs@3.2.0 # use the AWS ECS orb
-  aws-cli: circleci/aws-cli@3.1.4 # use the AWS CLI orb
+# jobs:
+#   build_and_deploy:
+#     docker:
+#       - image: 'cimg/base:stable'
+#     steps:
+#       - checkout
+#       - cloudrun/init
+#       - cloudrun/build:
+#           tag: 'gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}'
+#       - cloudrun/deploy:
+#           image: 'gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}'
+#           platform: managed
+#           region: us-east1
+#           service-name: example-service
+#           unauthenticated: true
+#       - run:
+#           command: >
+#             # A simple example of how a deployed managed service could be
+#             verified or further tested.
 
-jobs:
-  verify-deployment:
-    executor: aws-cli/default
-    steps:
-      - aws-cli/install
-      - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_KEY_SECRET
-          aws-region: AWS_REGION
-      - run:
-          name: Get last task definition
-          command: >
-            TASK_DEFINITION_ARN=$(aws ecs describe-task-definition \
-                --task-definition ${MY_APP_PREFIX}-service \
-                --output text \
-                --query 'taskDefinition.taskDefinitionArn')
-            echo "export TASK_DEFINITION_ARN='${TASK_DEFINITION_ARN}'" >>
-            "$BASH_ENV"
-      - aws-ecs/verify-revision-is-deployed:
-          family: '${MY_APP_PREFIX}-service'
-          cluster: '${MY_APP_PREFIX}-cluster'
-          task-definition-arn: '${TASK_DEFINITION_ARN}'
+#             # This step will send request our "API" and fail if there is
+#             unexpected output.
 
-workflows:
-  build-and-deploy:
-    jobs:
-      - aws-ecr/build-and-push-image: # orb built-in job
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_KEY_SECRET
-          registry-id: AWS_ECR_REGISTRY_ID
-          region: '${AWS_REGION}' 
-          path: 'backend/'
-          workspace-root: 'backend/'
-          repo: '${MY_APP_PREFIX}'
-          tag: '${CIRCLE_SHA1}'
-      - aws-ecs/deploy-service-update: # orb built-in job
-          requires:
-            - aws-ecr/build-and-push-image
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_KEY_SECRET
-          aws-region: AWS_REGION
-          family: '${MY_APP_PREFIX}-cluster-service'
-          cluster: 'arn:aws:ecs:us-west-2:812645980729:cluster/default'
-          container-image-name-updates: 'container=${MY_APP_PREFIX}-cluster-service,tag=${CIRCLE_SHA1}'
-      - verify-deployment:
-          requires:
-            - aws-ecs/deploy-service-update
+#             GCP_API_RESULTS=$(curl -s "$GCP_DEPLOY_ENDPOINT")
+
+#             if [ "$GCP_API_RESULTS" != "Hello World!" ]; then
+#               echo "Result is unexpected"
+#               echo 'Result: '
+#               curl -s "$GCP_DEPLOY_ENDPOINT"
+#               exit 1;
+#             fi
+#           name: Test managed deployed service.
+# orbs:
+#   cloudrun: circleci/gcp-cloud-run@1.0.2
+
+# workflows:
+#   build_and_deploy_to_managed_workflow:
+#     jobs:
+#       - build_and_deploy
+
+
+
+
+
+
+# version: 2.1 # 2.1 config required to use orbs
+
+# orbs:
+#   aws-ecr: circleci/aws-ecr@8.2.1 # use the AWS ECR orb
+#   aws-ecs: circleci/aws-ecs@3.2.0 # use the AWS ECS orb
+#   aws-cli: circleci/aws-cli@3.1.4 # use the AWS CLI orb
+
+# jobs:
+#   verify-deployment:
+#     executor: aws-cli/default
+#     steps:
+#       - aws-cli/install
+#       - aws-cli/setup:
+#           aws-access-key-id: AWS_ACCESS_KEY
+#           aws-secret-access-key: AWS_ACCESS_KEY_SECRET
+#           aws-region: AWS_REGION
+#       - run:
+#           name: Get last task definition
+#           command: >
+#             TASK_DEFINITION_ARN=$(aws ecs describe-task-definition \
+#                 --task-definition ${MY_APP_PREFIX}-service \
+#                 --output text \
+#                 --query 'taskDefinition.taskDefinitionArn')
+#             echo "export TASK_DEFINITION_ARN='${TASK_DEFINITION_ARN}'" >>
+#             "$BASH_ENV"
+#       - aws-ecs/verify-revision-is-deployed:
+#           family: '${MY_APP_PREFIX}-service'
+#           cluster: '${MY_APP_PREFIX}-cluster'
+#           task-definition-arn: '${TASK_DEFINITION_ARN}'
+
+# workflows:
+#   build-and-deploy:
+#     jobs:
+#       - aws-ecr/build-and-push-image: # orb built-in job
+#           aws-access-key-id: AWS_ACCESS_KEY
+#           aws-secret-access-key: AWS_ACCESS_KEY_SECRET
+#           registry-id: AWS_ECR_REGISTRY_ID
+#           region: '${AWS_REGION}' 
+#           path: 'backend/'
+#           workspace-root: 'backend/'
+#           repo: '${MY_APP_PREFIX}'
+#           tag: '${CIRCLE_SHA1}'
+#       - aws-ecs/deploy-service-update: # orb built-in job
+#           requires:
+#             - aws-ecr/build-and-push-image
+#           aws-access-key-id: AWS_ACCESS_KEY
+#           aws-secret-access-key: AWS_ACCESS_KEY_SECRET
+#           aws-region: AWS_REGION
+#           family: '${MY_APP_PREFIX}-cluster-service'
+#           cluster: 'arn:aws:ecs:us-west-2:812645980729:cluster/default'
+#           container-image-name-updates: 'container=${MY_APP_PREFIX}-cluster-service,tag=${CIRCLE_SHA1}'
+#       - verify-deployment:
+#           requires:
+#             - aws-ecs/deploy-service-update
+
+# # VS Code Extension Version: 1.5.1
 
 # VS Code Extension Version: 1.5.1
