@@ -221,4 +221,4 @@ def secret_data(user: User = Depends(get_user_from_access_token)):
 
 @router.get("/notsecret")
 def not_secret_data():
-    return "Not secret data"
+    return "Not secret datas"
