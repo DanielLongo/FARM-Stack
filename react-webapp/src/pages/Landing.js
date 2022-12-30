@@ -27,10 +27,10 @@ function Landing(props) {
                     <div className='w-full rounded-md p-16 flex flex-col justify-center items-center'>
                         <h1 className='font-CerealXBd lg:text-5xl text-3xl mb-6 bg-gradient-to-r bg-clip-text text-transparent
                         from-emerald-500 via-indigo-500 to-emerald-500
-                        animate-text'>Header goes here
+                        animate-text'>[Header goes here]
                         </h1>
                         <p className='font-CerealBK text-slate-500 mb-8 lg:text-center lg:text-lg text-md'>
-                            Description goes here
+                            [Description goes here]
                         </p>
                         <button className='btn-primary mb-4' onClick={callToAction}>Call to action</button>
                         </div>
