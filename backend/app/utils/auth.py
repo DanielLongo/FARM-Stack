@@ -33,7 +33,7 @@ class Auth:
             "iat": datetime.utcnow().timestamp(),
             "scope": "access_token",
             "sub": username,
-            "role": role
+            "role": role,
         }
         return jwt.encode(payload, self.secret, algorithm="HS256")
 
@@ -81,7 +81,7 @@ class Auth:
             raise HTTPException(status_code=401, detail="Refresh token expired")
         except jwt.InvalidTokenError:
             raise HTTPException(status_code=401, detail="Invalid refresh token")
-    
+
     def generate_passowrd_reset_token(self, username):
         payload = {
             "exp": datetime.utcnow() + timedelta(hours=1),

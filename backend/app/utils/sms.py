@@ -11,18 +11,14 @@ TWILIO_NUMBER = os.getenv("TWILIO_NUMBER")
 
 client = Client(TWILIO_SID, TWILIO_TOKEN)
 
+
 def send_sms(recipient, body):
     if recipient[0] != "+":
         recipient = "+" + recipient
     if len(recipient) < 12:
         recipient = "+1" + recipient[1:]
     try:
-        message = client.messages \
-                        .create(
-                            body=body,
-                            from_=TWILIO_NUMBER,
-                            to=recipient
-                        )
+        message = client.messages.create(body=body, from_=TWILIO_NUMBER, to=recipient)
 
         print(message.sid)
         return "success"

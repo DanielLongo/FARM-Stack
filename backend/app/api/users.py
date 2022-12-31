@@ -1,7 +1,13 @@
 import os
 from datetime import datetime, timedelta
 from app.utils.email.send import send_password_reset_email
-from app.dependencies import get_user_from_refresh_token, get_user_from_access_token, get_refresh_token, get_access_token, validate_captcha
+from app.dependencies import (
+    get_user_from_refresh_token,
+    get_user_from_access_token,
+    get_refresh_token,
+    get_access_token,
+    validate_captcha,
+)
 from dotenv import load_dotenv
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Security
 from fastapi.security import (
@@ -27,7 +33,7 @@ auth_handler = Auth()
 security = HTTPBearer()
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
-REFRESH_TOKEN_EXPIRE_DAYS = 1 #float(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
+REFRESH_TOKEN_EXPIRE_DAYS = 1  # float(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
 ACCESS_TOKEN_EXPIRE_MINUTES = 1
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 if JWT_SECRET_KEY is None:
@@ -43,7 +49,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @router.post("/signup")
-async def signup(form_data: OAuth2PasswordRequestForm = Depends(), reCaptcha: bool = Depends(validate_captcha)):
+async def signup(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    reCaptcha: bool = Depends(validate_captcha),
+):
     email, password = form_data.username, form_data.password
 
     # check to make sure email and password are valid
@@ -88,6 +97,7 @@ def grant_user_tokens(user_id):
     # return reponse with tokens as cookies
     return return_token_response(access_token, refresh_token)
 
+
 def split_token(token):
     access_token_header_and_payload = token.split(".")[0] + "." + token.split(".")[1]
     access_token_signature = token.split(".")[2]
@@ -96,7 +106,9 @@ def split_token(token):
 
 def return_token_response(access_token, refresh_token):
     access_token_header_and_payload, access_token_signature = split_token(access_token)
-    refresh_token_header_and_payload, refresh_token_signature = split_token(refresh_token)
+    refresh_token_header_and_payload, refresh_token_signature = split_token(
+        refresh_token
+    )
 
     response = JSONResponse(status_code=200, content={"status": "success"})
 
@@ -106,7 +118,7 @@ def return_token_response(access_token, refresh_token):
         value=access_token_header_and_payload,
         secure=True,
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60 - 15,
-        samesite="none"
+        samesite="none",
     )
     response.set_cookie(
         key="access_token_signature",
@@ -114,14 +126,14 @@ def return_token_response(access_token, refresh_token):
         httponly=True,
         secure=True,
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60 - 15,
-        samesite="none"
+        samesite="none",
     )
     response.set_cookie(
         key="refresh_token_header_and_payload",
         value=refresh_token_header_and_payload,
         secure=True,
         max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60 - 15,
-        samesite="none"
+        samesite="none",
     )
     response.set_cookie(
         key="refresh_token_signature",
@@ -130,14 +142,17 @@ def return_token_response(access_token, refresh_token):
         secure=True,
         max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60 - 15,
         path="/users",
-        samesite="none"
+        samesite="none",
     )
-    
+
     return response
 
 
 @router.post("/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), reCaptcha: bool = Depends(validate_captcha)):
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    reCaptcha: bool = Depends(validate_captcha),
+):
     email, password = form_data.username, form_data.password
 
     user = await db["users"].find_one({"email": email})
@@ -178,7 +193,7 @@ async def authenticate_with_google(request: Request):
                 "account_type": "google",
                 "google_id": token_info["sub"],
                 "active": True,
-                "password_reset_token": None
+                "password_reset_token": None,
             }
         )
         user = await db["users"].find_one(
@@ -189,20 +204,34 @@ async def authenticate_with_google(request: Request):
 
 
 @router.post("/logout")
-async def logout(user: get_user_from_refresh_token = Depends(), refresh_token: str = Depends(get_refresh_token)):
+async def logout(
+    user: get_user_from_refresh_token = Depends(),
+    refresh_token: str = Depends(get_refresh_token),
+):
     if refresh_token is None:
         raise HTTPException(status_code=400, detail="Invalid Refresh Token")
     if user is None:
         raise HTTPException(status_code=400, detail="Invalid Refresh Token")
     await db["refresh_tokens"].delete_one({"token_id": refresh_token})
-    
+
     response = JSONResponse(status_code=200, content={"status": "success"})
-    response.delete_cookie("access_token_header_and_payload", path="/", samesite="none", secure=True)
-    response.delete_cookie("access_token_signature", path="/", samesite="none", httponly=True, secure=True)
-    response.delete_cookie("refresh_token_header_and_payload", samesite="none", secure=True)
-    response.delete_cookie("refresh_token_signature", path="/users", samesite="none", httponly=True, secure=True)
+    response.delete_cookie(
+        "access_token_header_and_payload", path="/", samesite="none", secure=True
+    )
+    response.delete_cookie(
+        "access_token_signature", path="/", samesite="none", httponly=True, secure=True
+    )
+    response.delete_cookie(
+        "refresh_token_header_and_payload", samesite="none", secure=True
+    )
+    response.delete_cookie(
+        "refresh_token_signature",
+        path="/users",
+        samesite="none",
+        httponly=True,
+        secure=True,
+    )
     return response
-    
 
 
 @router.get("/refresh_access_token")
@@ -211,10 +240,10 @@ async def refresh_token(
 ):
     user_id = auth_handler.decode_refresh_token(refresh_token)
 
-
-
     # check if refresh token is in revoked tokens
-    db_entry = await db["refresh_tokens"].find_one({"token_id": refresh_token, "user_id": user_id})
+    db_entry = await db["refresh_tokens"].find_one(
+        {"token_id": refresh_token, "user_id": user_id}
+    )
     if db_entry is None:
         raise HTTPException(status_code=400, detail="Invalid Refresh Token")
 
@@ -251,16 +280,23 @@ async def request_password_reset(params: Request):
     if user is None:
         return {"message": "If account exists email sent"}
     if user["account_type"] == "google":
-        raise HTTPException(status_code=400, detail="Cannot reset password for google account")
-    
+        raise HTTPException(
+            status_code=400, detail="Cannot reset password for google account"
+        )
+
     # generate password reset token
     password_reset_token = auth_handler.encode_password_reset_token(user["_id"])
-    await db["users"].update_one({"_id": user["_id"]}, {"$set": {"password_reset_token": password_reset_token}})
+    await db["users"].update_one(
+        {"_id": user["_id"]}, {"$set": {"password_reset_token": password_reset_token}}
+    )
     password_reset_link = f"{FRONTEND_URL}/reset-password?token={password_reset_token}"
     res = send_password_reset_email(email, password_reset_link)
     if res.status_code != "success":
-        raise HTTPException(status_code=500, detail="Error sending email. Please contact support.")
+        raise HTTPException(
+            status_code=500, detail="Error sending email. Please contact support."
+        )
     return {"message": "If account exists email sent"}
+
 
 @router.post("/reset_password")
 async def reset_password(params: Request):
@@ -268,7 +304,10 @@ async def reset_password(params: Request):
     password = params.json()["password"]
     user_id = auth_handler.decode_password_reset_token(password_reset_token)
     hashed_password = auth_handler.get_password_hash(password)
-    await db["users"].update_one({"_id": user_id}, {"$set": {"hashed_password": hashed_password, "password_reset_token": None}})
+    await db["users"].update_one(
+        {"_id": user_id},
+        {"$set": {"hashed_password": hashed_password, "password_reset_token": None}},
+    )
     await db["refresh_tokens"].delete_many({"user_id": user_id})
     return {"message": "Password reset successful"}
 
