@@ -7,8 +7,11 @@ import { useNavigate } from "react-router-dom";
 import GoogleAuth from '../components/GoogleAuth';
 import { GlobalContext } from "../state/GlobalState";
 import { toast } from "react-toastify";
+import {CAPTHCA_SITE_KEY} from "../constants";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function LoginForm({ onClose, showSignUp, showPasswordReset }) {
+    const reCaptchaRef = React.createRef();
     const navigate = useNavigate();
     const { setAuthState } = useContext(GlobalContext);
 
@@ -17,7 +20,9 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
 
     const handleLogin = async () => {
         try {
-            await login(email, password)
+            const captchaToken = await reCaptchaRef.current.executeAsync();
+            await reCaptchaRef.current.reset();
+            await login(email, password, captchaToken)
             setAuthState(true)
             navigate('/home');
         } catch (e) {
@@ -40,6 +45,10 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
                         <GoogleAuth />
                         <hr class="mt-8 mb-6 h-0.5 bg-gray-100 rounded border-0 dark:bg-gray-100" />
                         {/* <form> */}
+                        <ReCAPTCHA
+                            sitekey={CAPTHCA_SITE_KEY}
+                            size="invisible"
+                            ref={reCaptchaRef}/>
                         <label className='text-xs font-semibold' for="email">Email</label>
                         <input
                             value={email}

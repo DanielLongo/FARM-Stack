@@ -9,11 +9,12 @@ import PasswordResetForm from "../views/RequestPasswordReset";
 import SignUpForm from "../views/SignUp";
 import LoginForm from "../views/Login";
 
+
 function AuthModal({ setAuthModalType, type }) {
     if (type == "login") {
-        return (
+       return (
             <div className="h-screen w-screen">
-                <LoginForm onClose={() => setAuthModalType(null)} showSignUp={() => setAuthModalType("signup")} showPasswordReset={() => setAuthModalType("reset_password")} />
+                <LoginForm onClose={() => setAuthModalType(null)} showSignUp={() => setAuthModalType("signup")} showPasswordReset={() => setAuthModalType("reset_password")}/>
             </div>
         )
     } else if (type == "signup") {
