@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import clsx from 'clsx';
+import clsx from "clsx";
 
 function Button({ text, onClick, size, disabled, type }) {
-    const CLASSNAME = `
+  const CLASSNAME = `
     items-center 
     inline 
     justify-center 
@@ -24,18 +24,18 @@ function Button({ text, onClick, size, disabled, type }) {
     focus:ring-offset-2 
     focus:ring-primary-600
     bg-primary-600
-    `
+    `;
 
-    return (
-        <button
-            onClick={onClick}
-            type="button"
-            disabled={disabled}
-            className={clsx(CLASSNAME)}
-        >
-            {text}
-        </ button >
-    );
+  return (
+    <button
+      onClick={onClick}
+      type="button"
+      disabled={disabled}
+      className={clsx(CLASSNAME)}
+    >
+      {text}
+    </button>
+  );
 }
 
 export default Button;

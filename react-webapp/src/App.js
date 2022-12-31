@@ -1,35 +1,31 @@
-import { useContext } from 'react';
-import { GlobalProvider, GlobalContext } from './state/GlobalState';
+import { useContext } from "react";
+import { GlobalProvider, GlobalContext } from "./state/GlobalState";
 
-import './App.css'
+import "./App.css";
 
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Redirect
-} from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Redirect } from "react-router-dom";
 
-import Home from './pages/Home';
-import Landing from './pages/Landing';
-import PasswordReset from './pages/PasswordReset';
+import Home from "./pages/Home";
+import Landing from "./pages/Landing";
+import PasswordReset from "./pages/PasswordReset";
 
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GOOGLE_CLIENT_ID } from './constants';
-
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GOOGLE_CLIENT_ID } from "./constants";
 
 function App() {
-
   const { isAuthed } = useContext(GlobalContext);
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-
       <GlobalProvider>
-        <ToastContainer position="top-center" hideProgressBar autoClose={3000}/>
+        <ToastContainer
+          position="top-center"
+          hideProgressBar
+          autoClose={3000}
+        />
         <BrowserRouter>
           <Routes>
             <Route path="/home" element={<Home />} />
@@ -39,7 +35,6 @@ function App() {
         </BrowserRouter>
       </GlobalProvider>
     </GoogleOAuthProvider>
-
   );
 }
 

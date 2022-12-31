@@ -10,7 +10,6 @@
 //         cookies.get("access_token_header_and_payload")
 //     );
 
-
 //     useEffect(() => {
 //         console.log("refreshTokening tokens!");
 //         setRefreshToken(cookies.get("refresh_token_header_and_payload"));
@@ -31,7 +30,7 @@
 //         }
 //         return false;
 //     };
-    
+
 //     return {
 //         hasAccess, hasRefresh
 //     };
