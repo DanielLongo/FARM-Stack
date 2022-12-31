@@ -24,8 +24,8 @@ export const login = async (username, password) => {
             }
         } else {
             let tokens = await res.json()
-            await SecureStore.setItemAsync("access_token_", tokens.access_token)
-            await SecureStore.setItemAsync("refresh_token_", tokens.refresh_token)
+            // await SecureStore.setItemAsync("access_token_", tokens.access_token)
+            // await SecureStore.setItemAsync("refresh_token_", tokens.refresh_token)
             return "success"
         }
     } catch (error) {
@@ -56,8 +56,8 @@ export const signUp = async (username, password) => {
             }
         } else {
             let tokens = await res.json()
-            await SecureStore.setItemAsync("access_token_", tokens.access_token)
-            await SecureStore.setItemAsync("refresh_token_", tokens.refresh_token)
+            // await SecureStore.setItemAsync("access_token_", tokens.access_token)
+            // await SecureStore.setItemAsync("refresh_token_", tokens.refresh_token)
             return "success"
         }
     } catch (error) {
@@ -73,8 +73,10 @@ export const signOut = async () => {
     let request = new Request(`${API_ENDPOINT}/users/logout`, requestOptions)
     const response = await fetch(request, requestOptions);
 
-    await SecureStore.deleteItemAsync("access_token_")
-    await SecureStore.deleteItemAsync("refresh_token_")
+    await SecureStore.deleteItemAsync("access_token", "bad")
+
+    await SecureStore.deleteItemAsync("access_token")
+    await SecureStore.deleteItemAsync("refresh_token")
 }
 
 export const logOutOfAllDevices = async () => {
@@ -83,8 +85,8 @@ export const logOutOfAllDevices = async () => {
     };
     let request = new Request(`${API_ENDPOINT}/users/revoke_all_refresh_tokens`, requestOptions)
     const response = await fetch(request, requestOptions);
-    await SecureStore.deleteItemAsync("access_token_")
-    await SecureStore.deleteItemAsync("refresh_token_")
+    await SecureStore.deleteItemAsync("access_token")
+    await SecureStore.deleteItemAsync("refresh_token")
 }
 
 export const googleAuth = async (access_token) => {
@@ -99,8 +101,8 @@ export const googleAuth = async (access_token) => {
     let request = new Request(`${API_ENDPOINT}/users/authenticate_with_google`, requestOptions)
     let res = await fetch(request)
     let tokens = await res.json()
-    await SecureStore.setItemAsync("access_token_", tokens.access_token)
-    await SecureStore.setItemAsync("refresh_token_", tokens.refresh_token)
+    // await SecureStore.setItemAsync("access_token", tokens.access_token)
+    // await SecureStore.setItemAsync("refresh_token", tokens.refresh_token)
     return "success"
 }
 
@@ -114,8 +116,8 @@ export const refreshAccessToken = async () => {
     let request = new Request(`${API_ENDPOINT}/users/refresh_token`, requestOptions)
     let tokens = await fetch(request)
     tokens = await tokens.json()
-    await SecureStore.setItemAsync("access_token_", tokens.access_token)
-    await SecureStore.setItemAsync("refresh_token_", tokens.refresh_token)
+    // await SecureStore.setItemAsync("access_token", tokens.access_token)
+    // await SecureStore.setItemAsync("refresh_token", tokens.refresh_token)
     return "success"
 }
 

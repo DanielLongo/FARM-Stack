@@ -2,6 +2,9 @@ import React from "react";
 import { API_ENDPOINT } from "../constants";
 import decodeJwt from 'jwt-decode';
 import { TokenStorage } from "./token_storage";
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 export const login = async (username, password) => {
     try {
@@ -11,7 +14,8 @@ export const login = async (username, password) => {
 
         let requestOptions = {
             method: 'POST',
-            body: formdata
+            body: formdata,
+            credentials: 'include',
         };
 
         let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions)
@@ -23,12 +27,6 @@ export const login = async (username, password) => {
             } else {
                 throw new Error(res.statusText);
             }
-        } else {
-            let tokens = await res.json()
-            TokenStorage.setItem("access_token_", tokens.access_token)
-            TokenStorage.setItem("refresh_token_", tokens.refresh_token)
-
-            return "success"
         }
     } catch (error) {
         throw error
@@ -56,38 +54,39 @@ export const signUp = async (username, password) => {
             } else {
                 throw new Error(res.statusText);
             }
-        } else {
-            let tokens = await res.json()
-            TokenStorage.setItem("access_token_", tokens.access_token)
-            TokenStorage.setItem("refresh_token_", tokens.refresh_token)
-
-            return "success"
-        }
+        } 
     } catch (error) {
         throw error
     }
 }
 
 export const signOut = async () => {
-    // let requestOptions = {
-    //     method: 'POST',
-    // };
-
-    // let request = new Request(`${API_ENDPOINT}/users/logout`, requestOptions)
-    // const response = await fetch(request, requestOptions);
-
-    TokenStorage.removeItem("access_token_")
-    TokenStorage.removeItem("refresh_token_")
+    let requestOptions = {
+        method: 'POST',
+        credentials: 'include',
+    };
+    try {
+        let request = new Request(`${API_ENDPOINT}/users/logout`, requestOptions)
+        const response = await fetch(request, requestOptions);
+    } catch (error) {
+        console.log("error", error)
+    }
+    await cookies.remove("refresh_token_header_and_payload", { path: '/users' })
+    await cookies.remove("access_token_header_and_payload", { path: '/' })
 }
 
 export const logOutOfAllDevices = async () => {
     let requestOptions = {
         method: 'POST',
     };
-    let request = new Request(`${API_ENDPOINT}/users/revoke_all_refresh_tokens`, requestOptions)
-    const response = await fetch(request, requestOptions);
-    TokenStorage.removeItem("access_token_")
-    TokenStorage.removeItem("refresh_token_")
+    try {
+        let request = new Request(`${API_ENDPOINT}/users/revoke_all_refresh_tokens`, requestOptions)
+        const response = await fetch(request, requestOptions);
+    } catch (error) {
+        console.log("error", error)
+    }
+    await TokenStorage.removeItem("access_token")
+    await TokenStorage.removeItem("refresh_token")
 }
 
 export const googleAuth = async (access_token) => {
@@ -100,11 +99,11 @@ export const googleAuth = async (access_token) => {
     };
 
     let request = new Request(`${API_ENDPOINT}/users/authenticate_with_google`, requestOptions)
-    let res = await fetch(request)
-    let tokens = await res.json()
-    console.log("tokens", tokens)
-    TokenStorage.setItem("access_token_", tokens.access_token)
-    TokenStorage.setItem("refresh_token_", tokens.refresh_token)
+    try {
+        let res = await fetch(request)
+    } catch (error) {
+        throw error
+    }
     return "success"
 }
 
@@ -116,10 +115,11 @@ export const refreshAccessToken = async () => {
         }
     }
     let request = new Request(`${API_ENDPOINT}/users/refresh_token`, requestOptions)
-    let tokens = await fetch(request)
-    tokens = await tokens.json()
-    TokenStorage.setItem("access_token_", tokens.access_token)
-    TokenStorage.setItem("refresh_token_", tokens.refresh_token)
+    try {
+        let res = await fetch(request)
+    } catch (error) {
+        throw error
+    }
     return "success"
 }
 

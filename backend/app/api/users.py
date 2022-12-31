@@ -1,8 +1,7 @@
 import os
 from datetime import datetime, timedelta
 from app.utils.email.send import send_password_reset_email
-from app.dependencies import get_user_from_refresh_token
-from app.dependencies import get_user_from_access_token
+from app.dependencies import get_user_from_refresh_token, get_user_from_access_token, get_refresh_token, get_access_token
 from dotenv import load_dotenv
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Security
 from fastapi.security import (
@@ -17,6 +16,7 @@ from app.utils.auth import Auth
 from app.utils.database import db
 from app.utils.google_auth import validate_token
 from app.utils.validate_credentials import validate_email, validate_password
+from fastapi.responses import JSONResponse, Response
 
 load_dotenv()
 
@@ -84,7 +84,50 @@ def grant_user_tokens(user_id):
         }
     )
 
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    # return reponse with tokens as cookies
+    return return_token_response(access_token, refresh_token)
+
+def split_token(token):
+    access_token_header_and_payload = token.split(".")[0] + "." + token.split(".")[1]
+    access_token_signature = token.split(".")[2]
+    return access_token_header_and_payload, access_token_signature
+
+
+def return_token_response(access_token, refresh_token):
+    access_token_header_and_payload, access_token_signature = split_token(access_token)
+    refresh_token_header_and_payload, refresh_token_signature = split_token(refresh_token)
+
+    response = JSONResponse(status_code=200, content={"status": "success"})
+
+    response.set_cookie(
+        key="access_token_header_and_payload",
+        value=access_token_header_and_payload,
+        secure=True,
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+    )
+    response.set_cookie(
+        key="access_token_signature",
+        value=access_token_signature,
+        httponly=True,
+        secure=True,
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+    )
+    response.set_cookie(
+        key="refresh_token_header_and_payload",
+        value=refresh_token_header_and_payload,
+        secure=True,
+        max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+        path="/users"
+    )
+    response.set_cookie(
+        key="refresh_token_signature",
+        value=refresh_token_signature,
+        httponly=True,
+        secure=True,
+        max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+        path="/users"
+    )
+    return response
 
 
 @router.post("/login")
@@ -140,13 +183,20 @@ async def authenticate_with_google(request: Request):
 
 
 @router.post("/logout")
-async def logout(user: get_user_from_refresh_token = Depends(), refresh_token: str = Cookie(None, alias="refresh_token_")):
+async def logout(user: get_user_from_refresh_token = Depends(), refresh_token: str = Depends(get_refresh_token)):
     if refresh_token is None:
         raise HTTPException(status_code=400, detail="Invalid Refresh Token")
     if user is None:
         raise HTTPException(status_code=400, detail="Invalid Refresh Token")
     await db["refresh_tokens"].delete_one({"token_id": refresh_token})
-    return {"message": "Logged out"}
+    
+    response = JSONResponse(status_code=200, content={"status": "success"})
+    response.delete_cookie("access_token_header_and_payload", path="/")
+    response.delete_cookie("access_token_signature", path="/")
+    response.delete_cookie("refresh_token_header_and_payload", path="/users")
+    response.delete_cookie("refresh_token_signature", path="/users")
+    return response
+    
 
 
 @router.get("/refresh_token")
@@ -171,7 +221,8 @@ async def refresh_token(
         }
     )
     new_token = auth_handler.refresh_token(refresh_token)
-    return {"access_token": new_token, "refresh_token": refresh_token}
+
+    return return_token_response(new_token, refresh_token)
 
 
 @router.post("/revoke_all_refresh_tokens")
