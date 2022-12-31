@@ -1,23 +1,24 @@
 import React, { useContext, useState } from 'react';
 import { XIcon, Heros } from "@heroicons/react/solid";
 import Modal from '../components/Modal';
-import { googleAuth, signUp } from '../utils/auth';
-import { useNavigate } from "react-router-dom";
-import { GlobalContext } from '../state/GlobalState';
+import useAuth from '../utils/useAuth';
 import { toast } from "react-toastify"
+import {CAPTHCA_SITE_KEY} from "../constants";
+import ReCAPTCHA from "react-google-recaptcha";
+import GoogleAuth from '../components/GoogleAuth';
 
 function SignUpForm({ onClose, showLogin }) {
-    const navigate = useNavigate();
-    const { setAuthState } = useContext(GlobalContext);
+    const reCaptchaRef = React.createRef();
+    const {signUp, authIsLoading} = useAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSignUp = async () => {
         try {
-            await signUp(email, password)
-            setAuthState(true)
-            navigate('/home');
+            const reCaptchaToken = await reCaptchaRef.current.executeAsync();
+            await reCaptchaRef.current.reset();
+            await signUp(email, password, reCaptchaToken)
         } catch (e) {
             toast.error(e.message)
         }
@@ -35,13 +36,12 @@ function SignUpForm({ onClose, showLogin }) {
                 <div className='flex flex-row items-center justify-around mb-16'>
                     <div className='px-12'>
                         <h1 className="text-2xl text-center font-bold mb-8">Sign Up</h1>
-                        <button onClick={googleAuth} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 focus:bg-white rounded-lg w-full focus:border-slate-500 flex-row justify-around items-center flex">
-                            <div className="flex flex-row">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google logo" className="w-6 h-6 mr-2" />
-                                <p className="font-semibold text-slate-500">Sign up with Google</p>
-                            </div>
-                        </button>
+                        <GoogleAuth mode={"signUp"}/>
                         <hr class="mt-8 mb-6 h-0.5 bg-gray-100 rounded border-0 dark:bg-gray-300" />
+                        <ReCAPTCHA
+                            sitekey={CAPTHCA_SITE_KEY}
+                            size="invisible"
+                            ref={reCaptchaRef}/>
                         <label className='text-xs font-semibold' for="email">Email</label>
                         <input
                             value={email}

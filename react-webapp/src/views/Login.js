@@ -1,30 +1,23 @@
-import React, { useContext, useState } from "react";
-import { XIcon, Heros } from "@heroicons/react/solid";
+import React, { useState } from "react";
+import { XIcon } from "@heroicons/react/solid";
 import Modal from '../components/Modal';
-// import {login, resendConfirmationCode, googleAuth} from '../utils/auth';
-import { login } from '../utils/auth';
-import { useNavigate } from "react-router-dom";
+import useAuth from '../utils/useAuth';
 import GoogleAuth from '../components/GoogleAuth';
-import { GlobalContext } from "../state/GlobalState";
 import { toast } from "react-toastify";
 import {CAPTHCA_SITE_KEY} from "../constants";
 import ReCAPTCHA from "react-google-recaptcha";
 
 function LoginForm({ onClose, showSignUp, showPasswordReset }) {
     const reCaptchaRef = React.createRef();
-    const navigate = useNavigate();
-    const { setAuthState } = useContext(GlobalContext);
-
+    const {login, authIsLoading} = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const handleLogin = async () => {
         try {
-            const captchaToken = await reCaptchaRef.current.executeAsync();
+            const reCaptchaToken = await reCaptchaRef.current.executeAsync();
             await reCaptchaRef.current.reset();
-            await login(email, password, captchaToken)
-            setAuthState(true)
-            navigate('/home');
+            await login(email, password, reCaptchaToken)
         } catch (e) {
             toast.error(e.message)
         }
@@ -42,9 +35,8 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
                 <div className='flex flex-row items-center justify-around mb-16'>
                     <div className='px-12'>
                         <h1 className="text-2xl text-center font-bold mb-8">Login</h1>
-                        <GoogleAuth />
+                        <GoogleAuth mode={"login"}/>
                         <hr class="mt-8 mb-6 h-0.5 bg-gray-100 rounded border-0 dark:bg-gray-100" />
-                        {/* <form> */}
                         <ReCAPTCHA
                             sitekey={CAPTHCA_SITE_KEY}
                             size="invisible"
@@ -71,7 +63,6 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
                         <button onClick={handleLogin} className="mb-4 mt-2 btn-primary w-full">
                             Login
                         </button>
-                        {/* </form> */}
                         <div className='flex flex-row justify-center'>
                             <p className="text-xs mb-2">Don't have an account? <a onClick={showSignUp} className='text-blue-800 cursor-pointer hover:underline'>Sign Up</a></p>
                         </div>

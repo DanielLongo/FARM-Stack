@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-
+import useAuth from '../utils/useAuth';
 import AppBar from '../components/AppBar';
 import Footer from '../components/Footer';
 
-import Button from "../components/UI/Button"
 
 /**
  * The first page a user sees when they visit the site. This page should be a simple description of the
  * product and a call to action to sign up for the beta.
  */
 function Landing(props) {
-
+    const {} = useAuth();
     const [email, setEmail] = useState('');
 
     /**

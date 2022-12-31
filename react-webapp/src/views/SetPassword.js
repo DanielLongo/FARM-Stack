@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import {XIcon, Heros} from "@heroicons/react/solid";
 import Modal from '../components/Modal';
-import {changePassword } from '../utils/auth';
 import { useNavigate } from "react-router-dom";
-
+import useAuth from "../utils/useAuth";
 
 
 function SetPasswordForm({username, onClose}) {
+    const {changePassword} = useAuth();
     const [code, setCode] = useState("");
     const [newPassword, setNewPassword] = useState("");
 

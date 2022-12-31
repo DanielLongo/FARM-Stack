@@ -1,9 +1,5 @@
 import React from "react";
 
-import { useState, useEffect } from 'react';
-import { signOut } from '../utils/auth';
-import { useNavigate } from "react-router-dom";
-
 import SetPasswordForm from "../views/SetPassword";
 import PasswordResetForm from "../views/RequestPasswordReset";
 import SignUpForm from "../views/SignUp";
@@ -14,7 +10,7 @@ function AuthModal({ setAuthModalType, type }) {
     if (type == "login") {
        return (
             <div className="h-screen w-screen">
-                <LoginForm onClose={() => setAuthModalType(null)} showSignUp={() => setAuthModalType("signup")} showPasswordReset={() => setAuthModalType("reset_password")}/>
+                <LoginForm onClose={() => setAuthModalType(null)} showSignUp={() => setAuthModalType("signup")} showPasswordReset={() => 9("reset_password")}/>
             </div>
         )
     } else if (type == "signup") {

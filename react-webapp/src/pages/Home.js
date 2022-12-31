@@ -1,31 +1,26 @@
 import React, { useEffect, useContext } from "react";
-import AppBar from "../components/AppBar";
-import SignUpForm from "../views/SignUp";
-import { API_ENDPOINT } from '../constants';
-import { authToken } from "../utils/auth";
-import { TokenStorage } from "../utils/token_storage";
-import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
-import { signOut } from "../utils/auth";
-import { GlobalContext } from "../state/GlobalState";
-import  customAxios  from "../utils/useAxios";
 import SideMenu from "../components/SideMenu";
 import Dashboard from '../views/Dashboard';
 import Account from '../views/Account';
+import useAuth from "../utils/useAuth";
+
 function Home() {
-    const [view, setView] = React.useState('dashboard');
     const navigate = useNavigate();
-    const { isAuthed, setAuthState } = useContext(GlobalContext);
-    const signOutWrapper = async () => {
-        signOut()
-        setAuthState(false)
-        navigate('/');
-      }
+    const [view, setView] = React.useState('dashboard');
+    const { isAuthed, signOut } = useAuth();
+
+    useEffect(() => {
+        if (!isAuthed) {
+            // navigate('/');
+            console.log('not authed')
+        }
+    }, [])
 
     return (
         <div className="flex flex-1 flex-row">
             <SideMenu
-                signOutWrapper={signOutWrapper}
+                signOutWrapper={signOut}
                 view={view}
                 setView={setView}
 

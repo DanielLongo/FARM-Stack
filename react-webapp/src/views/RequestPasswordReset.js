@@ -1,10 +1,11 @@
 import React, {useState} from "react";
 import {XIcon, Heros} from "@heroicons/react/solid";
 import Modal from '../components/Modal';
-import { forgotPassword } from '../utils/auth';
+import useAuth from "../utils/useAuth";
 
 function RequestPasswordReset({onClose, setUsername, showSetPassword, initialUsername}) {
     const [email, setEmail] = useState(initialUsername);
+    const {forgotPassword} = useAuth();
 
     const handleResetPassword = async () => {
         setUsername(email)
