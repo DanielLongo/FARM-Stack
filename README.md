@@ -1,5 +1,7 @@
 ### TODOs
 - [ ] account page 
+- [x] recaptcha
+- [x] split tokens
 - [ ] auth QA
 - [ ] dashborad
 - [ ] deployment (circle ci)
@@ -14,9 +16,9 @@
 - [ ] landing page 
 - [ ] account page
 - [x] dockerize
-- [ ] deployment with github actions
+- [x] deployment with cloud run and vercel
 - [x] password reset
-- [ ] fix toasts
+- [x] fix toasts
 - [x] css classes for common componentes (input, secondary button...)
 - [ ] react-native frontend*
 
@@ -24,8 +26,9 @@
 
 On the frontend
 - react
-- aws cognito (auth)
 - tailwindcss
+- auth with JWT (refresh and access store in multiple cookies)
+- reCaptcha v2
 
 On the backend
 - fastapi
@@ -37,17 +40,13 @@ For testing
 
 For deployment
 - docker
-- github actions
+- cloud run
+- vercel
 
 
 
 ### Quick Start Guide
 You'll need to setup (1) aws congito and signin with google and (2) mongodb before getting started. 
-
-#### (1) aws congito 
-- add aws amplify (for cognito only) to you project [here](https://docs.amplify.aws/start/getting-started/installation/q/integration/react/)
-- create a user pool [here](https://docs.aws.amazon.com/cognito/latest/developerguide/tutorial-create-user-pool.html)
-- setup google sign in [here](https://docs.amplify.aws/lib/auth/social/q/platform/js/#setup-frontend)
 
 #### (2) mongodb
 - spin up an atlas cluster [here](https://www.mongodb.com/docs/atlas/getting-started/)
