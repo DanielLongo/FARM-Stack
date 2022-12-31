@@ -7,7 +7,7 @@ import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
 
-export const login = async (username, password) => {
+export const login = async (username, password, reCaptchaToken) => {
     try {
         let formdata = new FormData();
         formdata.append("username", username);
@@ -16,7 +16,10 @@ export const login = async (username, password) => {
         let requestOptions = {
             method: 'POST',
             body: formdata,
-            credentials: "include"
+            credentials: "include",
+            headers: {
+                "Recaptcha-Token": reCaptchaToken
+            }
         };
         let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions)
         let res = await fetch(request)
@@ -31,7 +34,7 @@ export const login = async (username, password) => {
     }
 }
 
-export const signUp = async (username, password) => {
+export const signUp = async (username, password, reCaptchaToken) => {
     try {
         let formdata = new FormData();
         formdata.append("username", username);
@@ -39,7 +42,10 @@ export const signUp = async (username, password) => {
         let requestOptions = {
             method: 'POST',
             body: formdata,
-            credentials: "include"
+            credentials: "include",
+            headers: {
+                "Recaptcha-Token": reCaptchaToken
+            }
         };
         let request = new Request(`${API_ENDPOINT}/users/signup`, requestOptions)
         let res = await fetch(request)

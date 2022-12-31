@@ -1,10 +1,27 @@
-from fastapi import Request, HTTPException, status, Depends
+from fastapi import Request, HTTPException, status, Depends, Form
 from fastapi import Cookie
 from app.utils.auth import Auth
 from app.utils.database import db
 from bson.objectid import ObjectId
+import os
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+
+CAPTCHA_SECRET = os.getenv("CAPTCHA_SECRET")
 
 auth_handler = Auth()
+
+async def validate_captcha(request: Request):
+    captcha_token = request.headers.get("Recaptcha-Token")
+    url = f"https://www.google.com/recaptcha/api/siteverify?secret={CAPTCHA_SECRET}&response={captcha_token}"
+    response = requests.post(url).json()
+    if not response['success'] == True:
+        raise HTTPException(status_code=400, detail="Invalid reCaptcha Token")
+    return response
+
+
 
 async def get_access_token(access_token_header_and_payload: str = Cookie(None, alias="access_token_header_and_payload"), access_token_signature: str = Cookie(None, alias="access_token_signature")):
     if access_token_header_and_payload is None or access_token_signature is None:

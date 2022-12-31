@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta
 from app.utils.email.send import send_password_reset_email
-from app.dependencies import get_user_from_refresh_token, get_user_from_access_token, get_refresh_token, get_access_token
+from app.dependencies import get_user_from_refresh_token, get_user_from_access_token, get_refresh_token, get_access_token, validate_captcha
 from dotenv import load_dotenv
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Security
 from fastapi.security import (
@@ -17,6 +17,7 @@ from app.utils.database import db
 from app.utils.google_auth import validate_token
 from app.utils.validate_credentials import validate_email, validate_password
 from fastapi.responses import JSONResponse, Response
+
 
 load_dotenv()
 
@@ -42,7 +43,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @router.post("/signup")
-async def signup(form_data: OAuth2PasswordRequestForm = Depends()):
+async def signup(form_data: OAuth2PasswordRequestForm = Depends(), reCaptcha: bool = Depends(validate_captcha)):
     email, password = form_data.username, form_data.password
 
     # check to make sure email and password are valid
@@ -136,7 +137,7 @@ def return_token_response(access_token, refresh_token):
 
 
 @router.post("/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), reCaptcha: bool = Depends(validate_captcha)):
     email, password = form_data.username, form_data.password
 
     user = await db["users"].find_one({"email": email})
