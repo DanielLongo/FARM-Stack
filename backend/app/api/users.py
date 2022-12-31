@@ -26,15 +26,15 @@ auth_handler = Auth()
 security = HTTPBearer()
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
-REFRESH_TOKEN_EXPIRE_DAYS = float(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
-
+REFRESH_TOKEN_EXPIRE_DAYS = 1 #float(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
+ACCESS_TOKEN_EXPIRE_MINUTES = 1
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 if JWT_SECRET_KEY is None:
     # to generate a secret key use "openssl rand -hex 32"
     raise ValueError("JWT_SECRET not set")
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -99,34 +99,39 @@ def return_token_response(access_token, refresh_token):
 
     response = JSONResponse(status_code=200, content={"status": "success"})
 
+    # -15 so expires just before actual token does
     response.set_cookie(
         key="access_token_header_and_payload",
         value=access_token_header_and_payload,
         secure=True,
-        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60 - 15,
+        samesite="none"
     )
     response.set_cookie(
         key="access_token_signature",
         value=access_token_signature,
         httponly=True,
         secure=True,
-        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60 - 15,
+        samesite="none"
     )
     response.set_cookie(
         key="refresh_token_header_and_payload",
         value=refresh_token_header_and_payload,
         secure=True,
-        max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
-        path="/users"
+        max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60 - 15,
+        samesite="none"
     )
     response.set_cookie(
         key="refresh_token_signature",
         value=refresh_token_signature,
         httponly=True,
         secure=True,
-        max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
-        path="/users"
+        max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60 - 15,
+        path="/users",
+        samesite="none"
     )
+    
     return response
 
 
@@ -191,22 +196,24 @@ async def logout(user: get_user_from_refresh_token = Depends(), refresh_token: s
     await db["refresh_tokens"].delete_one({"token_id": refresh_token})
     
     response = JSONResponse(status_code=200, content={"status": "success"})
-    response.delete_cookie("access_token_header_and_payload", path="/")
-    response.delete_cookie("access_token_signature", path="/")
-    response.delete_cookie("refresh_token_header_and_payload", path="/users")
-    response.delete_cookie("refresh_token_signature", path="/users")
+    response.delete_cookie("access_token_header_and_payload", path="/", samesite="none", secure=True)
+    response.delete_cookie("access_token_signature", path="/", samesite="none", httponly=True, secure=True)
+    response.delete_cookie("refresh_token_header_and_payload", samesite="none", secure=True)
+    response.delete_cookie("refresh_token_signature", path="/users", samesite="none", httponly=True, secure=True)
     return response
     
 
 
-@router.get("/refresh_token")
+@router.get("/refresh_access_token")
 async def refresh_token(
-    credentrials: HTTPAuthorizationCredentials = Security(security),
+    refresh_token: str = Depends(get_refresh_token),
 ):
-    refresh_token = credentrials.credentials
+    user_id = auth_handler.decode_refresh_token(refresh_token)
+
+
 
     # check if refresh token is in revoked tokens
-    db_entry = await db["refresh_tokens"].find_one({"token_id": refresh_token})
+    db_entry = await db["refresh_tokens"].find_one({"token_id": refresh_token, "user_id": user_id})
     if db_entry is None:
         raise HTTPException(status_code=400, detail="Invalid Refresh Token")
 

@@ -4,6 +4,7 @@ import decodeJwt from 'jwt-decode';
 import { TokenStorage } from "./token_storage";
 import Cookies from 'universal-cookie';
 
+
 const cookies = new Cookies();
 
 export const login = async (username, password) => {
@@ -15,20 +16,17 @@ export const login = async (username, password) => {
         let requestOptions = {
             method: 'POST',
             body: formdata,
-            credentials: 'include',
+            credentials: "include"
         };
-
         let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions)
         let res = await fetch(request)
         if (!res.ok) {
-            let details = await res.json().then(data => data)
-            if (details["detail"]) {
-                throw new Error(details["detail"]);
-            } else {
-                throw new Error(res.statusText);
-            }
+            throw new Error(res.statusText);
         }
     } catch (error) {
+        if (error.response) {
+            throw new Error(error.response.data.detail);
+        }
         throw error
     }
 }
@@ -38,91 +36,113 @@ export const signUp = async (username, password) => {
         let formdata = new FormData();
         formdata.append("username", username);
         formdata.append("password", password);
-
         let requestOptions = {
             method: 'POST',
-            body: formdata
+            body: formdata,
+            credentials: "include"
         };
-
         let request = new Request(`${API_ENDPOINT}/users/signup`, requestOptions)
-
         let res = await fetch(request)
         if (!res.ok) {
-            let details = await res.json().then(data => data)
-            if (details["detail"]) {
-                throw new Error(details["detail"]);
-            } else {
-                throw new Error(res.statusText);
-            }
+            throw new Error(res.statusText);
         } 
     } catch (error) {
+        if (error.response) {
+            throw new Error(error.response.data.detail);
+        }
         throw error
     }
 }
 
 export const signOut = async () => {
-    let requestOptions = {
-        method: 'POST',
-        credentials: 'include',
-    };
     try {
+        let requestOptions = {
+            method: 'POST',
+            credentials: "include"
+        }
         let request = new Request(`${API_ENDPOINT}/users/logout`, requestOptions)
-        const response = await fetch(request, requestOptions);
+        const res = await fetch(request, requestOptions);
+        if (!res.ok) {
+            throw new Error(res.statusText);
+        }
     } catch (error) {
-        console.log("error", error)
+        console.log("error so", error)
     }
     await cookies.remove("refresh_token_header_and_payload", { path: '/users' })
     await cookies.remove("access_token_header_and_payload", { path: '/' })
 }
 
 export const logOutOfAllDevices = async () => {
-    let requestOptions = {
-        method: 'POST',
-    };
     try {
+        let requestOptions = {
+            method: 'POST',
+            credentials: "include"
+        }
         let request = new Request(`${API_ENDPOINT}/users/revoke_all_refresh_tokens`, requestOptions)
-        const response = await fetch(request, requestOptions);
+        const res = await fetch(request, requestOptions);
+        if (!res.ok) {
+            throw new Error(res.statusText);
+        }
     } catch (error) {
-        console.log("error", error)
+        console.log("error so all", error)
     }
-    await TokenStorage.removeItem("access_token")
-    await TokenStorage.removeItem("refresh_token")
+    await cookies.remove("refresh_token_header_and_payload", { path: '/users' })
+    await cookies.remove("access_token_header_and_payload", { path: '/' })
 }
 
 export const googleAuth = async (access_token) => {
-    let requestOptions = {
-        method: 'POST',
-        body: JSON.stringify({ "access_token": access_token }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-
-    let request = new Request(`${API_ENDPOINT}/users/authenticate_with_google`, requestOptions)
     try {
-        let res = await fetch(request)
+        let requestOptions = {
+            method: 'POST',
+            credentials: "include",
+            body: JSON.stringify({"access_token": access_token})
+        }
+        let request = new Request(`${API_ENDPOINT}/users/authenticate_with_google`, requestOptions)
+        const res = await fetch(request, requestOptions);
+        if (!res.ok) {
+            throw new Error(res.statusText);
+        }
     } catch (error) {
         throw error
     }
-    return "success"
 }
 
 export const refreshAccessToken = async () => {
-    let requestOptions = {
-        method: 'POST',
-        headers: {
-            'credentials': 'include',
-        }
-    }
-    let request = new Request(`${API_ENDPOINT}/users/refresh_token`, requestOptions)
+    console.log("refreshAccessToken")
     try {
-        let res = await fetch(request)
+        let requestOptions = {
+            method: 'GET',
+            credentials: "include"
+        }
+        let request = new Request(`${API_ENDPOINT}/users/refresh_access_token`, requestOptions)
+        const res = await fetch(request, requestOptions);
+        if (!res.ok) {
+            throw new Error(res.statusText);
+        }
     } catch (error) {
         throw error
     }
     return "success"
 }
 
+export const hasAccessToken = async () => {
+    let accessToken = await cookies.get("access_token_header_and_payload");
+    console.log("accessToken", accessToken)
+    if (accessToken && accessToken != undefined) {
+        return true;
+    }
+    return false;
+}
+
+export const hasRefreshToken = async () => {
+    let refreshToken = await cookies.get("refresh_token_header_and_payload");
+    console.log("refreshToken", refreshToken)
+    if (refreshToken && refreshToken != undefined) {
+        console.log("refreshToken!", refreshToken)
+        return true;
+    }
+    return false;
+}
 
 export const forgotPassword = async (username) => {
     console.log("forgetPassword")

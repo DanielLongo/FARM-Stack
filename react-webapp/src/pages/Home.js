@@ -9,9 +9,10 @@ import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { signOut } from "../utils/auth";
 import { GlobalContext } from "../state/GlobalState";
-
+import  customAxios  from "../utils/useAxios";
 function Home() {
     const navigate = useNavigate();
+    const axios = customAxios();
     const { isAuthed, setAuthState } = useContext(GlobalContext);
     const signOutWrapper = async () => {
         signOut()
@@ -89,7 +90,7 @@ function Home() {
             </div>
             <div>
                 <h1 className="mt-20 text-3xl font-bold underline">Home</h1>
-                <button onClick={testSecureEndpoint}>
+                <button onClick={() => testSecureEndpoint(axios)}>
                     Secure Endpoint
                 </button>
             </div>
