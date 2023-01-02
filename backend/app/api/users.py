@@ -23,6 +23,7 @@ from app.utils.database import db
 from app.utils.google_auth import validate_token
 from app.utils.validate_credentials import validate_email, validate_password
 from fastapi.responses import JSONResponse, Response
+from bson.objectid import ObjectId
 
 
 load_dotenv()
@@ -175,32 +176,25 @@ async def authenticate_with_google(request: Request):
     email = token_info["email"]
 
     # check to make sure email is not already in use with non-google account
-    user = await db["users"].find_one({"email": email, "account_type": "inhouse"})
+    user = await db["users"].find_one({"email": email})
     if user is not None:
         raise HTTPException(
             status_code=400, detail="Invalid Email: Email already in use"
-        )
-
-    # check to see if user already exists
-    user = await db["users"].find_one(
-        {"email": email, "account_type": "google", "google_id": token_info["sub"]}
     )
-    if user is None:
-        # add new user to db
-        new_user = await db["users"].insert_one(
-            {
-                "email": email,
-                "account_type": "google",
-                "google_id": token_info["sub"],
-                "active": True,
-                "password_reset_token": None,
-            }
-        )
-        user = await db["users"].find_one(
-            {"email": email, "account_type": "google", "google_id": token_info["sub"]}
-        )
 
-    return grant_user_tokens(user["_id"])
+
+
+    new_user = await db["users"].insert_one(
+        {
+            "email": email,
+            "account_type": "google",
+            "google_id": token_info["sub"],
+            "active": True,
+            "password_reset_token": None,
+        }
+    )
+    new_user_id = str(new_user.inserted_id)
+    return grant_user_tokens(new_user_id)
 
 
 @router.post("/logout")
@@ -274,24 +268,25 @@ async def revoke_all_refresh_tokens(
 
 @router.post("/request_password_reset")
 async def request_password_reset(params: Request):
-    email = params.json()["email"]
+    params = await params.json()
+    email = params["email"]
     validate_email(email)
     user = await db["users"].find_one({"email": email})
     if user is None:
         return {"message": "If account exists email sent"}
-    if user["account_type"] == "google":
+    if "account_type" in user and user["account_type"] == "google":
         raise HTTPException(
             status_code=400, detail="Cannot reset password for google account"
         )
 
     # generate password reset token
-    password_reset_token = auth_handler.encode_password_reset_token(user["_id"])
+    password_reset_token = auth_handler.generate_passowrd_reset_token(str(user["_id"]))
     await db["users"].update_one(
         {"_id": user["_id"]}, {"$set": {"password_reset_token": password_reset_token}}
     )
     password_reset_link = f"{FRONTEND_URL}/reset-password?token={password_reset_token}"
     res = send_password_reset_email(email, password_reset_link)
-    if res.status_code != "success":
+    if res != "success":
         raise HTTPException(
             status_code=500, detail="Error sending email. Please contact support."
         )
@@ -300,17 +295,36 @@ async def request_password_reset(params: Request):
 
 @router.post("/reset_password")
 async def reset_password(params: Request):
-    password_reset_token = params.json()["token"]
-    password = params.json()["password"]
+    params = await params.json()
+    password_reset_token = params["token"]
+    password = params["password"]
     user_id = auth_handler.decode_password_reset_token(password_reset_token)
-    hashed_password = auth_handler.get_password_hash(password)
+    password_validation = validate_password(password)
+    hashed_password = auth_handler.encode_password(password)
+
+    # check if token is in user db entry
+    db_entry = await db["users"].find_one(
+        {"_id": ObjectId(user_id), "password_reset_token": password_reset_token}
+    )
+    if db_entry is None:
+        raise HTTPException(status_code=403, detail="Invalid Password Reset Token")
+
+    if password_validation != "success":
+        raise HTTPException(
+            status_code=400, detail="Invalid Password: " + password_validation
+        )
+
+
     await db["users"].update_one(
-        {"_id": user_id},
+        {"_id": ObjectId(user_id)},
         {"$set": {"hashed_password": hashed_password, "password_reset_token": None}},
     )
     await db["refresh_tokens"].delete_many({"user_id": user_id})
     return {"message": "Password reset successful"}
 
+@router.get("/me")
+async def get_user(user: User = Depends(get_user_from_access_token)):
+    return {"email": user["email"], "account_type": user["account_type"] if "account_type" in user else "email"}
 
 @router.get("/secret")
 def secret_data(user: User = Depends(get_user_from_access_token)):

@@ -3,13 +3,13 @@ import { XIcon, Heros } from "@heroicons/react/solid";
 import Modal from "../components/Modal";
 import useAuth from "../utils/useAuth";
 import { toast } from "react-toastify";
-import { CAPTHCA_SITE_KEY } from "../constants";
+import Constants from "../constants";
 import ReCAPTCHA from "react-google-recaptcha";
 import GoogleAuth from "../components/GoogleAuth";
 
 function SignUpForm({ onClose, showLogin }) {
   const reCaptchaRef = React.createRef();
-  const { signUp, authIsLoading } = useAuth();
+  const { signUp } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,7 +44,7 @@ function SignUpForm({ onClose, showLogin }) {
             <GoogleAuth mode={"signUp"} />
             <hr class="mt-8 mb-6 h-0.5 bg-gray-100 rounded border-0 dark:bg-gray-300" />
             <ReCAPTCHA
-              sitekey={CAPTHCA_SITE_KEY}
+              sitekey={Constants.CAPTHCA_SITE_KEY}
               size="invisible"
               ref={reCaptchaRef}
             />

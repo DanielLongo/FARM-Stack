@@ -1,33 +1,39 @@
 import React from "react";
-import { useState, useEffect, useContext } from "react";
-import { API_ENDPOINT } from "../constants";
+import { useState, useEffect, useContext, useRef } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from 'react-toastify';
+import Constants from '../constants';
+const API_ENDPOINT = Constants.API_ENDPOINT;
 function useAuth() {
   const cookies = new Cookies();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(null);
   const [isAuthed, setIsAuthed] = useState(null);
+    
+
 
   useEffect(() => {
     console.log("refreshTokening is authed!", isAuthed);
     if (isAuthed === null) {
       hasRefreshToken();
-    } else if (isAuthed) {
-      navigate("/home");
-    } else {
-      navigate("/");
+    }
+    // if not authed and on home page redirect to landing page
+    if (isAuthed === false && window.location.pathname === "/home") {
+      // navigate("/");
+      console.log("redirecting to landing page");
     }
   }, [isAuthed]);
 
+
+  // check for page change, if not authed, redirect to login page
+
+
+
   const login = async (username, password, reCaptchaToken) => {
-    setIsLoading(true);
     try {
       let formdata = new FormData();
       formdata.append("username", username);
       formdata.append("password", password);
-
       let requestOptions = {
         method: "POST",
         body: formdata,
@@ -38,7 +44,6 @@ function useAuth() {
       };
       let request = new Request(`${API_ENDPOINT}/users/login`, requestOptions);
       let res = await fetch(request);
-      setIsLoading(false);
       if (!res.ok) {
         throw new Error(res.statusText);
       }
@@ -48,11 +53,12 @@ function useAuth() {
       }
       throw error;
     }
+    
     setIsAuthed(true);
+    navigate("/home");
   };
 
   const signUp = async (username, password, reCaptchaToken) => {
-    setIsLoading(true);
     try {
       let formdata = new FormData();
       formdata.append("username", username);
@@ -67,7 +73,6 @@ function useAuth() {
       };
       let request = new Request(`${API_ENDPOINT}/users/signup`, requestOptions);
       let res = await fetch(request);
-      setIsLoading(false);
       if (!res.ok) {
         throw new Error(res.statusText);
       }
@@ -78,10 +83,10 @@ function useAuth() {
       throw error;
     }
     setIsAuthed(true);
+    navigate("/home");
   };
 
   const signOut = async () => {
-    setIsLoading(true);
     try {
       let requestOptions = {
         method: "POST",
@@ -89,23 +94,19 @@ function useAuth() {
       };
       let request = new Request(`${API_ENDPOINT}/users/logout`, requestOptions);
       const res = await fetch(request, requestOptions);
-      setIsLoading(false);
       if (!res.ok) {
         throw new Error(res.statusText);
       }
     } catch (error) {
       console.log("error so", error);
     }
-    await cookies.remove("refresh_token_header_and_payload", {
-      path: "/users",
-    });
+    await cookies.remove("refresh_token_header_and_payload", {path: "/"});
     await cookies.remove("access_token_header_and_payload", { path: "/" });
-    setIsLoading(false);
     setIsAuthed(false);
+    navigate("/");
   };
 
   const logOutOfAllDevices = async () => {
-    setIsLoading(true);
     try {
       let requestOptions = {
         method: "POST",
@@ -116,7 +117,6 @@ function useAuth() {
         requestOptions
       );
       const res = await fetch(request, requestOptions);
-      setIsLoading(false);
       if (!res.ok) {
         throw new Error(res.statusText);
       }
@@ -127,12 +127,11 @@ function useAuth() {
       path: "/users",
     });
     await cookies.remove("access_token_header_and_payload", { path: "/" });
-    setIsLoading(false);
     setIsAuthed(false);
+    navigate("/");
   };
 
   const googleAuth = async (access_token) => {
-    setIsLoading(true);
     try {
       let requestOptions = {
         method: "POST",
@@ -144,7 +143,6 @@ function useAuth() {
         requestOptions
       );
       const res = await fetch(request, requestOptions);
-      setIsLoading(false);
       if (!res.ok) {
         throw new Error(res.statusText);
       }
@@ -152,6 +150,7 @@ function useAuth() {
       throw error;
     }
     setIsAuthed(true);
+    navigate("/home");
   };
 
   const refreshAccessToken = async () => {
@@ -185,21 +184,46 @@ function useAuth() {
 
   const hasRefreshToken = async () => {
     let refreshToken = await cookies.get("refresh_token_header_and_payload");
-    console.log("refreshToken", refreshToken);
     if (refreshToken && refreshToken != undefined) {
       setIsAuthed(true);
       return true;
+    } else {
+      setIsAuthed(false);
+      return false;
     }
-    setIsAuthed(false);
-    return false;
   };
 
-  const forgotPassword = async (username) => {
-    console.log("forgetPassword");
+  const forgotPassword = async (email) => {
+    let requestOptions = {
+      method: "POST",
+      body: JSON.stringify({ email: email }),
+    }
+    let request = new Request(`${API_ENDPOINT}/users/request_password_reset`, requestOptions);
+    let res = await fetch(request);
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
   };
 
-  const changePassword = async (code, password) => {
-    console.log("setPassword");
+  const changePassword = async (token, password) => {
+    try {
+      let requestOptions = {
+        method: "POST",
+        body: JSON.stringify({ token: token, password: password }),
+      }
+      
+      let request = new Request(`${API_ENDPOINT}/users/reset_password`, requestOptions);
+      let res = await fetch(request);
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+    } catch (error) {
+      if (error.response) {
+        throw new Error(error.response.data.detail);
+      }
+      throw error;
+    }
+    
   };
   return {
     login,
@@ -212,8 +236,7 @@ function useAuth() {
     hasRefreshToken,
     forgotPassword,
     changePassword,
-    isAuthed,
-    authIsLoading: isLoading,
+    isAuthed
   };
 }
 

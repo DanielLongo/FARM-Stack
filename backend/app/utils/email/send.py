@@ -53,13 +53,13 @@ def send_email(recipient, subject, body):
 
 def send_password_reset_email(email: str, action_url: str):
     # loads email from html template
-    with open("templates/password_reset.html", "r") as f:
+    with open("./app/utils/email/templates/password_reset.html", "r") as f:
         html_content = f.read()
 
     # Replace placeholders in the HTML with the actual values
     html_content = html_content.replace("{{action_url}}", action_url)
     res = send_email(email, "Password Reset", html_content)
-    print(res)
+    return res
 
 
 def test_mail_works():

@@ -2,20 +2,25 @@ import React, { useState } from "react";
 import { XIcon, Heros } from "@heroicons/react/solid";
 import Modal from "../components/Modal";
 import useAuth from "../utils/useAuth";
+import { toast } from 'react-toastify';
 
 function RequestPasswordReset({
   onClose,
-  setUsername,
   showSetPassword,
-  initialUsername,
+  initialEmail,
 }) {
-  const [email, setEmail] = useState(initialUsername);
+  const [email, setEmail] = useState(initialEmail);
   const { forgotPassword } = useAuth();
 
   const handleResetPassword = async () => {
-    setUsername(email);
-    const response = await forgotPassword(email);
-    showSetPassword();
+    try {
+      const response = await forgotPassword(email);
+      toast.success("If an account with this email exists, you should recieve an email for a password reset link. Check your spam folder if you don't see it in your inbox.");
+      onClose();
+    } catch (error) {
+      toast.error(error.message);
+    }
+    
   };
 
   return (

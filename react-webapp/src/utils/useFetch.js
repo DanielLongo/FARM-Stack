@@ -1,6 +1,7 @@
 import useAuth from "./useAuth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Constants from '../constants';
 
 function useFetch() {
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ function useFetch() {
       console.log("refreshing access token");
       await refreshAccessToken();
     }
-    let response = await fetch(url, config);
+    config["credentials"] = "include";
+    let response = await fetch(Constants.API_ENDPOINT + url, config);
     setIsLoading(false);
     return response;
   };

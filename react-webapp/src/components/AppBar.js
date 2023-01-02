@@ -7,7 +7,7 @@ import useAuth from "../utils/useAuth";
 function AppBar(props) {
   const navigate = useNavigate();
   const [authModalType, setAuthModalType] = useState(null);
-  const { isAuthed, signOut } = useAuth;
+  const { isAuthed, signOut } = useAuth();
 
   const showLogin = () => {
     setAuthModalType("login");

@@ -13,13 +13,15 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GOOGLE_CLIENT_ID } from "./constants";
+import Constants from "./constants";
+import useAuth from './utils/useAuth';
 
 function App() {
-  const { isAuthed } = useContext(GlobalContext);
+  // const { isAuthed } = useContext(GlobalContext);
+  // const { isAuthed } = useAuth();
 
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={Constants.GOOGLE_CLIENT_ID}>
       <GlobalProvider>
         <ToastContainer
           position="top-center"
@@ -30,7 +32,7 @@ function App() {
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/" element={<Landing />} />
-            <Route path="/password_reset" element={<PasswordReset />} />
+            <Route path="/reset-password" element={<PasswordReset />} />
           </Routes>
         </BrowserRouter>
       </GlobalProvider>

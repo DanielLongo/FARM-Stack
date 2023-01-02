@@ -6,9 +6,8 @@ function Dashboard() {
   const { refreshFetch, fetchIsLoading } = useFetch();
   const [email, setEmail] = React.useState("");
   const testSecureEndpoint = async () => {
-    const response = await refreshFetch(`${API_ENDPOINT}/users/secret`, {
+    const response = await refreshFetch("/users/secret", {
       method: "GET",
-      credentials: "include",
     });
     const json = await response.json();
     setEmail(json.email);

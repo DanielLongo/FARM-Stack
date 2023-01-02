@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 import SetPasswordForm from "../views/SetPassword";
 import PasswordResetForm from "../views/RequestPasswordReset";
@@ -6,13 +6,16 @@ import SignUpForm from "../views/SignUp";
 import LoginForm from "../views/Login";
 
 function AuthModal({ setAuthModalType, type }) {
+  const [email, setEmail] = useState("");
   if (type == "login") {
     return (
       <div className="h-screen w-screen">
         <LoginForm
+          email={email}
+          setEmail={setEmail}
           onClose={() => setAuthModalType(null)}
           showSignUp={() => setAuthModalType("signup")}
-          showPasswordReset={() => 9("reset_password")}
+          showPasswordReset={() => setAuthModalType("reset_password")}
         />
       </div>
     );
@@ -29,6 +32,7 @@ function AuthModal({ setAuthModalType, type }) {
     return (
       <div className="h-screen w-screen">
         <PasswordResetForm
+          initialEmail={email}
           onClose={() => setAuthModalType(null)}
           showLogin={() => setAuthModalType("login")}
         />

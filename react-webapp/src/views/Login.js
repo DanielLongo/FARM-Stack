@@ -4,13 +4,12 @@ import Modal from "../components/Modal";
 import useAuth from "../utils/useAuth";
 import GoogleAuth from "../components/GoogleAuth";
 import { toast } from "react-toastify";
-import { CAPTHCA_SITE_KEY } from "../constants";
+import Constants from "../constants";
 import ReCAPTCHA from "react-google-recaptcha";
 
-function LoginForm({ onClose, showSignUp, showPasswordReset }) {
+function LoginForm({ onClose, showSignUp, showPasswordReset, email, setEmail }) {
   const reCaptchaRef = React.createRef();
-  const { login, authIsLoading } = useAuth();
-  const [email, setEmail] = useState("");
+  const { login } = useAuth();
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
@@ -43,7 +42,7 @@ function LoginForm({ onClose, showSignUp, showPasswordReset }) {
             <GoogleAuth mode={"login"} />
             <hr class="mt-8 mb-6 h-0.5 bg-gray-100 rounded border-0 dark:bg-gray-100" />
             <ReCAPTCHA
-              sitekey={CAPTHCA_SITE_KEY}
+              sitekey={Constants.CAPTHCA_SITE_KEY}
               size="invisible"
               ref={reCaptchaRef}
             />
