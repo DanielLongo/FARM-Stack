@@ -26,9 +26,9 @@ For deployment (deplyment guide under construction)
 
 
 ### Quick Start Guide
-You'll need to setup (1) aws congito and signin with google and (2) mongodb before getting started. 
 
-#### (2) mongodb
+
+#### (1) mongodb
 - spin up an atlas cluster [here](https://www.mongodb.com/docs/atlas/getting-started/)
 
 
